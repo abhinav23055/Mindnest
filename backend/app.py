@@ -41,6 +41,10 @@ def home():
     # Serves the landing page first
     return render_template('index.html') 
 
+@app.route('/articles')
+def articles():
+    return render_template('articles.html')
+
 @app.route('/signup')
 def signup_page():
     # Serves the login/signup forms (auth.html)
