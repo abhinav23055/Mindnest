@@ -59,13 +59,19 @@
     </div>
 
     <div class="test-grid">
-        <button class="test-card" onclick="openQuiz('Depression')">DEPRESSION TEST <span class="plus-icon">+</span></button>
-        <button class="test-card" onclick="openQuiz('Anxiety')">ANXIETY TEST <span class="plus-icon">+</span></button>
-        <button class="test-card" onclick="openQuiz('ADHD')">ADHD TEST <span class="plus-icon">+</span></button>
-        <button class="test-card" onclick="openQuiz('Sleep')">SLEEP QUALITY TEST <span class="plus-icon">+</span></button>
-        <button class="test-card" onclick="openQuiz('Stress')">WORK STRESS TEST <span class="plus-icon">+</span></button>
-        <button class="test-card" onclick="openQuiz('Social')">SOCIAL ANXIETY TEST <span class="plus-icon">+</span></button>
-    </div>
+    <button class="test-card" onclick="openQuiz('Depression')">DEPRESSION TEST <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('Anxiety')">ANXIETY TEST <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('ADHD')">ADHD TEST <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('OCD')">OCD TEST <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('Bipolar')">BIPOLAR TEST <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('Psychosis')">PSYCHOSIS TEST <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('Eating')">EATING DISORDER TEST <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('PTSD')">PTSD TEST <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('Addiction')">ADDICTION TEST <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('SocialAnxiety')">SOCIAL ANXIETY TEST <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('Postpartum')">POSTPARTUM TEST <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('Child')">CHILD MENTAL HEALTH <span class="plus-icon">+</span></button>
+</div>
 </div>
 
 <div id="quizOverlay">
@@ -79,66 +85,117 @@
 
 <script>
     const quizData = {
-        'Depression': ["Little interest in doing things?", "Feeling hopeless?", "Trouble concentrating?"],
-        'Anxiety': ["Feeling nervous or on edge?", "Not being able to stop worrying?", "Feeling afraid something awful might happen?"],
-        'ADHD': ["Difficulty sustaining attention?", "Fidgeting or squirming?", "Interrupting others?"],
-        'Sleep': ["Trouble falling asleep?", "Waking up tired?", "Feeling sleepy during the day?"],
-        'Stress': ["Feeling overwhelmed at work?", "Irritable with colleagues?", "Difficulty relaxing?"],
-        'Social': ["Fear of being judged?", "Avoiding social events?", "Feeling physical anxiety in groups?"]
+        'Depression': ["In the past two weeks, how often have you felt sad, low, or empty?", "How often have you lost interest or pleasure in things you usually enjoy?", "How often do you feel tired or low on energy, even without much physical work?", "How often do you have trouble sleeping (sleeping too much or too little)?", "How often do you feel hopeless about the future?", "How often do you feel bad about yourself or feel like you are a failure?", "How often do you find it hard to concentrate on studies, work, or tasks?", "How often do you feel slow, unmotivated, or mentally heavy?", "How often do you feel lonely or disconnected from people?", "How often do negative thoughts interfere with your daily life?"],
+        'Anxiety': ["How often have you felt nervous, anxious, or on edge?", "How often do you worry too much about different things, even small ones?", "How often do you find it hard to control your worrying?", "How often do you feel restless or unable to relax?", "How often do you feel tired or exhausted because of worrying?", "How often do you have trouble concentrating because your mind is full of worries?", "How often do you feel irritated or easily annoyed due to stress?", "How often do you feel afraid that something bad might happen?", "How often do you experience physical signs of anxiety (fast heartbeat, etc.)?", "How often does anxiety interfere with your studies, work, or daily life?"],
+        'ADHD': ["How often do you find it hard to stay focused on tasks?", "How often do you get easily distracted by sounds or notifications?", "How often do you start tasks but struggle to finish them?", "How often do you forget important things like deadlines or appointments?", "How often do you feel restless or unable to sit still?", "How often do you rush into things without thinking?", "How often do you have trouble organizing your work or routine?", "How often do you avoid tasks that need long mental effort?", "How often do you feel your mind is always racing?", "How often do these focus problems affect your relationships?"],
+        'OCD': ["How often do you get unwanted thoughts or images that keep coming back?", "How often do these thoughts make you feel anxious or stressed?", "How often do you feel the need to check things repeatedly (locks, switches)?", "How often do you wash or clean more than necessary?", "How often do you feel you must do actions in a specific way to feel calm?", "How often do you repeat actions or words to reduce anxiety?", "How often do you feel uncomfortable if things are not perfectly arranged?", "How often do you avoid objects because they trigger stressful thoughts?", "How often do you spend a lot of time on these habits?", "How often do these behaviors interfere with your work or life?"],
+        'Bipolar': ["How often do you experience big mood changes (high and low)?", "How often do you feel unusually happy or excited for days?", "How often do you feel very sad, empty, or hopeless for days?", "How often do you notice your energy level changes a lot?", "How often do you need very little sleep but still feel full of energy?", "How often do your thoughts race or you talk much more than usual?", "How often do you do things impulsively during high-energy moods?", "How often do you feel too unmotivated to do simple tasks?", "How often do these mood changes affect your relationships?", "How often do people comment that your behavior changes a lot?"],
+        'Psychosis': ["How often do you see or sense things others do not notice?", "How often do you feel your thoughts are confused or mixed up?", "How often do you believe others are watching you without proof?", "How often do you find it hard to tell what is real?", "How often do your thoughts feel disconnected?", "How often do you feel your mind is not working the way it used to?", "How often do you lose interest in people and prefer to stay isolated?", "How often do you feel emotionally 'flat' or empty?", "How often do these experiences make it hard to manage daily life?", "How often do other people notice changes in your speech or behavior?"],
+        'Eating': ["How often do you worry a lot about your body shape or weight?", "How often do you feel guilty or ashamed after eating?", "How often do you skip meals to control your weight?", "How often do you feel out of control while eating?", "How often do you try to 'make up for eating' with fasting or over-exercise?", "How often do you think about calories or dieting for a large part of the day?", "How often do your eating habits affect your social life?", "How often do you avoid eating in front of others?", "How often do you feel unhappy with your body regardless of what others say?", "How often does your relationship with food feel stressful?"],
+        'PTSD': ["How often do you have unwanted memories or nightmares about a scary experience?", "How often do you feel upset when something reminds you of that experience?", "How often do you try to avoid thinking about a painful event from your past?", "How often do you avoid places or people that remind you of it?", "How often do you feel constantly on edge or easily startled?", "How often do you have trouble staying asleep?", "How often do you feel irritable or have sudden emotional reactions?", "How often do you feel distant from people you used to enjoy?", "How often do you have difficulty concentrating because of stressful thoughts?", "How often do these experiences interfere with your daily life?"],
+        'Addiction': ["How often do you feel a strong urge to use a substance or repeat a habit?", "How often do you use more or for longer than you planned?", "How often do you try to cut down but find it difficult?", "How often do you plan your day around it?", "How often do you continue even knowing it's harming your health or work?", "How often do you feel restless when you can't do it?", "How often do you neglect responsibilities because of it?", "How often do you hide how much you use or do it?", "How often do you need more than before to feel the same satisfaction?", "How often does this habit cause problems with people around you?"],
+        'SocialAnxiety': ["How often do you feel nervous in social situations like group talks?", "How often do you worry that others will judge or criticize you?", "How often do you avoid social events to avoid embarrassment?", "How often do you feel your heart race or hands shake around others?", "How often do you replay social interactions and worry about what you said?", "How often do you find it hard to speak up even when you want to?", "How often do you feel self-conscious about how you look or sound?", "How often do you prefer to stay invisible to avoid attention?", "How often do you avoid presentations or calls because of fear?", "How often does this fear affect your work or relationships?"],
+        'Postpartum': ["How often have you felt sad or empty since the baby was born?", "How often do you cry easily or feel overwhelmed for no clear reason?", "How often do you feel exhausted even when you get some rest?", "How often do you feel hopeless?", "How often do you lose interest in things you used to enjoy?", "How often do you feel guilty or feel like you are not a good enough mother?", "How often do you feel panicky about yourself or your baby?", "How often do you have trouble sleeping even when the baby is resting?", "How often do you feel emotionally distant from your baby?", "How often do these feelings make it hard to take care of yourself?"],
+        'Child': ["How often does your child seem sad or unhappy for long periods?", "How often does your child get very anxious about normal situations?", "How often does your child have tantrums that are hard to control?", "How often does your child have trouble concentrating on homework?", "How often does your child avoid school or friends they used to enjoy?", "How often does your child have sleep or appetite problems?", "How often does your child complain of pain without a clear medical reason?", "How often does your child seem very irritable or overly sensitive?", "How often do your child's emotions cause problems at school or home?", "How often do you feel your child is not coping well for their age?"]
     };
 
+    let responseValues = {}; // This stores the scores for the current quiz
+
     function openQuiz(type) {
-        // 1. Set the Title
+        // Reset scores for the new quiz
+        responseValues = {};
+        
         document.getElementById('quizTitle').innerText = type + " Assessment";
-        
-        // 2. Find the Content Area
         const content = document.getElementById('quizContent');
-        content.innerHTML = ""; // Clear old content
+        content.innerHTML = "";
         
-        // 3. Get questions (or fallback if not defined)
-        const questions = quizData[type] || ["How have you been feeling lately?"];
+        const questions = quizData[type] || [];
         
-        // 4. Generate the Question HTML
         questions.forEach((q, i) => {
             content.innerHTML += `
-                <div style="margin-bottom: 20px;">
-                    <p style="font-weight: 600;">${i+1}. ${q}</p>
+                <div style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                    <p style="font-weight: 600; margin-bottom: 10px;">${i+1}. ${q}</p>
                     <div class="options-group">
-                        <button class="opt-btn" onclick="this.parentElement.querySelectorAll('.opt-btn').forEach(b=>b.style.background='white'); this.style.background='#e6f0ec'">Not at all</button>
-                        <button class="opt-btn" onclick="this.parentElement.querySelectorAll('.opt-btn').forEach(b=>b.style.background='white'); this.style.background='#e6f0ec'">Several days</button>
-                        <button class="opt-btn" onclick="this.parentElement.querySelectorAll('.opt-btn').forEach(b=>b.style.background='white'); this.style.background='#e6f0ec'">Nearly every day</button>
+                        <button class="opt-btn" onclick="recordScore(${i}, 0, this)">Not at all</button>
+                        <button class="opt-btn" onclick="recordScore(${i}, 1, this)">Sometimes</button>
+                        <button class="opt-btn" onclick="recordScore(${i}, 2, this)">Often</button>
+                        <button class="opt-btn" onclick="recordScore(${i}, 3, this)">Very often</button>
                     </div>
                 </div>
             `;
         });
-
-        // 5. Add the Submit Button and Result Area
+        
         content.innerHTML += `
-            <button onclick="processResults('${type}')" style="background:var(--primary); color:white; border:none; width:100%; padding:15px; border-radius:10px; cursor:pointer; margin-top:20px;">
-                Submit Test
+            <button id="submitTestBtn" onclick="processResults('${type}')" style="background:var(--primary); color:white; border:none; width:100%; padding:15px; border-radius:10px; cursor:pointer; margin-top:20px; font-weight:bold;">
+                Submit Assessment
             </button>
-            <div id="innerResult" style="display:none; margin-top:20px; padding:15px; background:#f0f7f4; border-radius:10px; border:1px solid var(--primary);">
+            <div id="innerResult" style="display:none; margin-top:20px; padding:20px; background:#f0f7f4; border-radius:10px; border:1px solid var(--primary); animation: slideIn 0.3s ease;">
             </div>
         `;
-
-        // 6. Show the Overlay
+        
         document.getElementById('quizOverlay').style.display = 'flex';
+    }
+
+    function recordScore(questionIndex, value, btn) {
+        // Highlight the selected button and un-highlight others in the same group
+        const parent = btn.parentElement;
+        parent.querySelectorAll('.opt-btn').forEach(b => {
+            b.style.background = 'white';
+            b.style.color = 'var(--text)';
+        });
+        btn.style.background = 'var(--primary)';
+        btn.style.color = 'white';
+        
+        // Save the score
+        responseValues[questionIndex] = value;
     }
 
     function processResults(type) {
         const resDiv = document.getElementById('innerResult');
+        
+        // Count how many questions were answered
+        const answeredCount = Object.keys(responseValues).length;
+        const totalQuestions = quizData[type].length;
+
+        // Validation: Check if all questions are answered
+        if (answeredCount < totalQuestions) {
+            resDiv.style.display = "block";
+            resDiv.style.background = "#fff3f3";
+            resDiv.style.borderColor = "#ff4d4d";
+            resDiv.innerHTML = `<p style="color:#d93025; margin:0;">Please answer all ${totalQuestions} questions before submitting.</p>`;
+            return;
+        }
+
+        // Calculate total score
+        let totalScore = 0;
+        for (let key in responseValues) {
+            totalScore += responseValues[key];
+        }
+
+        let interpretation = "";
+        if (totalScore <= 7) interpretation = "Low signs - Continue your wellness journey.";
+        else if (totalScore <= 14) interpretation = "Mild signs - Keep an eye on your well-being.";
+        else if (totalScore <= 21) interpretation = "Moderate signs - Consider talking to someone you trust.";
+        else interpretation = "High signs - We strongly recommend professional support.";
+
         resDiv.style.display = "block";
+        resDiv.style.background = "#f0f7f4";
+        resDiv.style.borderColor = "var(--primary)";
         resDiv.innerHTML = `
-            <h4 style="color:var(--primary); margin-top:0;">Assessment Complete</h4>
-            <p style="font-size:14px;">Based on your responses for the <strong>${type} Test</strong>, your symptoms appear manageable. Continue monitoring your well-being with daily check-ins.</p>
-            <p style="font-size:12px; color:#666;"><em>This is not a medical diagnosis.</em></p>
+            <h4 style="color:var(--primary); margin-top:0;">${type} Result: ${totalScore}/30</h4>
+            <p style="font-size:14px; line-height:1.5;"><strong>Feedback:</strong> ${interpretation}</p>
+            <p style="font-size:11px; color:#666; border-top: 1px solid #ccc; margin-top:10px; padding-top:10px;">
+                Note: This tool is for awareness only and is not a medical diagnosis.
+            </p>
         `;
+        
+        // Scroll to the result
+        resDiv.scrollIntoView({ behavior: 'smooth' });
     }
 
     function closeQuiz() {
         document.getElementById('quizOverlay').style.display = 'none';
     }
-</script>
 </script>
 
 </body>
