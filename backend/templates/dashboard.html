@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MindNest | Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
+        body { background: #f9faf9; color: #2f2f2f; padding: 40px; }
+        
+        .dashboard-container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+        }
+
+        h2 { color: #4f7f6a; margin-bottom: 20px; }
+        .checkin-group { margin-bottom: 25px; }
+        label { display: block; margin-bottom: 10px; font-weight: 500; color: #555; }
+        
+        input[type="range"] { width: 100%; accent-color: #4f7f6a; cursor: pointer; }
+        .range-labels { display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-top: 5px; }
+        
+        .btn { background: #4f7f6a; color: white; padding: 12px 24px; border-radius: 30px; border: none; cursor: pointer; width: 100%; font-size: 16px; transition: 0.3s; margin-bottom: 15px; }
+        .btn:hover { background: #3d6353; }
+
+        /* Feedback Box Style */
+        #feedback-container {
+            display: none;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 12px;
+            background: #e6f0ec;
+            border-left: 5px solid #4f7f6a;
+            animation: slideIn 0.4s ease;
+        }
+
+        /* History Button & Table */
+        .btn-secondary {
+            background: transparent;
+            color: #4f7f6a;
+            padding: 10px 20px;
+            border: 2px solid #4f7f6a;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 20px auto;
+        }
+        .btn-secondary:hover { background: #4f7f6a; color: white; }
+
+        .table-card { background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #eee; margin-top: 20px; }
+        .modern-table { width: 100%; border-collapse: collapse; }
+        .modern-table th { background-color: #f8faf9; color: #4f7f6a; padding: 15px; text-align: left; font-size: 0.9rem; border-bottom: 2px solid #eef2f0; }
+        .modern-table td { padding: 15px; border-bottom: 1px solid #f1f1f1; color: #555; font-size: 0.85rem; }
+        .mood-val { font-weight: bold; color: #4f7f6a; }
+
+        .logout { text-align: center; margin-top: 20px; cursor: pointer; color: #888; text-decoration: underline; font-size: 14px; }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <h2>How are you today?</h2>
+        <p style="margin-bottom: 20px; color: #666;">Take a moment to check in with yourself.</p>
+
+        <div id="feedback-container">
+            <p id="feedback-text"></p>
+        </div>
+
+        <div class="checkin-group">
+            <label>Mood (1 = Low, 5 = High)</label>
+            <input type="range" id="mood" min="1" max="5" value="3">
+            <div class="range-labels"><span>Low</span><span>Balanced</span><span>High</span></div>
+        </div>
+
+        <div class="checkin-group">
+            <label>Energy (1 = Tired, 5 = Vibrant)</label>
+            <input type="range" id="energy" min="1" max="5" value="3">
+            <div class="range-labels"><span>Low</span><span>Balanced</span><span>High</span></div>
+        </div>
+
+        <div class="checkin-group">
+            <label>Stress (1 = Calm, 5 = Overwhelmed)</label>
+            <input type="range" id="stress" min="1" max="5" value="3">
+            <div class="range-labels"><span>Calm</span><span>Manageable</span><span>High</span></div>
+        </div>
+
+        <button class="btn" onclick="submitCheckin()">Save Check-in</button>
+        
+        <div style="text-align: center; margin-top: 10px;">
+            <a href="/screening" style="color: #4f7f6a; font-size: 14px; font-weight: 600; text-decoration: none;">Take a Mental Health Test →</a>
+        </div>
+
+        <button id="toggleHistoryBtn" class="btn-secondary" onclick="toggleHistory()">View Your Journey History ↓</button>
+
+        <div id="historyContainer" style="display: none; animation: fadeIn 0.5s ease;">
+            <div class="table-card">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Mood</th>
+                            <th>Energy</th>
+                            <th>Stress</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="logout" onclick="logout()">Logout</div>
+    </div>
+
+    <script>
+        const userId = localStorage.getItem('user_id');
+
+        if (!userId) {
+            window.location.href = "/signup"; 
+        }
+
+        async function submitCheckin() {
+            const mood = parseInt(document.getElementById('mood').value);
+            const energy = parseInt(document.getElementById('energy').value);
+            const stress = parseInt(document.getElementById('stress').value);
+
+            try {
+                const response = await fetch('/api/checkin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId, mood, energy, stress })
+                });
+
+                if (response.ok) {
+                    const feedbackBox = document.getElementById('feedback-container');
+                    const feedbackText = document.getElementById('feedback-text');
+                    
+                    let message = "Check-in saved! Thank you for taking a moment for yourself.";
+                    if (stress >= 4 && energy <= 2) {
+                        message = "<strong>MindNest Note:</strong> It looks like you're carrying a lot right now. Take a deep breath. You're doing great.";
+                    }
+
+                    feedbackText.innerHTML = message;
+                    feedbackBox.style.display = 'block';
+
+                    setTimeout(() => { feedbackBox.style.display = 'none'; }, 6000);
+                    
+                    if (isHistoryVisible) loadHistory(); 
+                }
+            } catch (err) { console.error("Save error:", err); }
+        }
+
+        let isHistoryVisible = false;
+        function toggleHistory() {
+            const container = document.getElementById('historyContainer');
+            const btn = document.getElementById('toggleHistoryBtn');
+            isHistoryVisible = !isHistoryVisible;
+            
+            if (isHistoryVisible) {
+                container.style.display = "block";
+                btn.innerText = "Hide History ↑";
+                loadHistory();
+            } else {
+                container.style.display = "none";
+                btn.innerText = "View Your Journey History ↓";
+            }
+        }
+
+        async function loadHistory() {
+            try {
+                const response = await fetch(`/api/history/${userId}`);
+                const data = await response.json();
+                const tableBody = document.getElementById('historyTableBody');
+                tableBody.innerHTML = ""; 
+
+                data.forEach(entry => {
+                    const formattedDate = new Date(entry.date).toLocaleDateString('en-US', { 
+                        month: 'short', day: 'numeric', year: 'numeric' 
+                    });
+                    tableBody.innerHTML += `
+                        <tr>
+                            <td><strong>${formattedDate}</strong></td>
+                            <td><span class="mood-val">${entry.mood}</span>/5</td>
+                            <td>${entry.energy}/5</td>
+                            <td>${entry.stress}/5</td>
+                        </tr>`;
+                });
+            } catch (e) { console.error("History error:", e); }
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "/";
+        }
+    </script>
+</body>
+</html>

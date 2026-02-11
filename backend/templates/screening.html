@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MindNest | Assessment Center</title>
+    <style>
+        :root {
+            --primary: #4f7f6a;
+            --secondary: #e6f0ec;
+            --text: #2f2f2f;
+            --bg: #f9faf9;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 40px 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        
+        /* Hero Section */
+        .hero { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 40px; }
+        h1 { color: var(--primary); font-size: 2.5rem; margin-bottom: 15px; }
+        .hero p { color: #666; line-height: 1.6; max-width: 700px; }
+
+        /* Grid Layout */
+        .test-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        
+        .test-card {
+            background: var(--primary);
+            color: white;
+            padding: 20px 25px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: left;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .test-card:hover { transform: translateY(-3px); background: #3d6353; }
+        .plus-icon { font-size: 1.5rem; font-weight: 300; }
+
+        /* Quiz Overlay */
+        #quizOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+        .quiz-modal { background: white; width: 90%; max-width: 600px; padding: 30px; border-radius: 20px; max-height: 80vh; overflow-y: auto; }
+        .opt-btn { width: 100%; text-align: left; padding: 12px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; background: white; cursor: pointer; transition: 0.2s; }
+        .opt-btn:hover { background: var(--secondary); border-color: var(--primary); }
+        .close-btn { float: right; cursor: pointer; color: #888; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="hero">
+        <h1>Take a Mental Health Test</h1>
+        <p>Online screening is one of the quickest and easiest ways to see what mental health symptoms you might be experiencing. It’s <strong>free, confidential, and backed by science.</strong></p>
+    </div>
+
+    <div class="test-grid">
+        <button class="test-card" onclick="openQuiz('Depression')">DEPRESSION TEST <span class="plus-icon">+</span></button>
+        <button class="test-card" onclick="openQuiz('Anxiety')">ANXIETY TEST <span class="plus-icon">+</span></button>
+        <button class="test-card" onclick="openQuiz('ADHD')">ADHD TEST <span class="plus-icon">+</span></button>
+        <button class="test-card" onclick="openQuiz('Sleep')">SLEEP QUALITY TEST <span class="plus-icon">+</span></button>
+        <button class="test-card" onclick="openQuiz('Stress')">WORK STRESS TEST <span class="plus-icon">+</span></button>
+        <button class="test-card" onclick="openQuiz('Social')">SOCIAL ANXIETY TEST <span class="plus-icon">+</span></button>
+    </div>
+</div>
+
+<div id="quizOverlay">
+    <div class="quiz-modal">
+        <span class="close-btn" onclick="closeQuiz()">✕ Close</span>
+        <h2 id="quizTitle" style="color: var(--primary);">Test</h2>
+        <hr style="margin: 20px 0; opacity: 0.2;">
+        <div id="quizContent"></div>
+    </div>
+</div>
+
+<script>
+    const quizData = {
+        'Depression': ["Little interest in doing things?", "Feeling hopeless?", "Trouble concentrating?"],
+        'Anxiety': ["Feeling nervous or on edge?", "Not being able to stop worrying?", "Feeling afraid something awful might happen?"],
+        'ADHD': ["Difficulty sustaining attention?", "Fidgeting or squirming?", "Interrupting others?"],
+        'Sleep': ["Trouble falling asleep?", "Waking up tired?", "Feeling sleepy during the day?"],
+        'Stress': ["Feeling overwhelmed at work?", "Irritable with colleagues?", "Difficulty relaxing?"],
+        'Social': ["Fear of being judged?", "Avoiding social events?", "Feeling physical anxiety in groups?"]
+    };
+
+    function openQuiz(type) {
+        // 1. Set the Title
+        document.getElementById('quizTitle').innerText = type + " Assessment";
+        
+        // 2. Find the Content Area
+        const content = document.getElementById('quizContent');
+        content.innerHTML = ""; // Clear old content
+        
+        // 3. Get questions (or fallback if not defined)
+        const questions = quizData[type] || ["How have you been feeling lately?"];
+        
+        // 4. Generate the Question HTML
+        questions.forEach((q, i) => {
+            content.innerHTML += `
+                <div style="margin-bottom: 20px;">
+                    <p style="font-weight: 600;">${i+1}. ${q}</p>
+                    <div class="options-group">
+                        <button class="opt-btn" onclick="this.parentElement.querySelectorAll('.opt-btn').forEach(b=>b.style.background='white'); this.style.background='#e6f0ec'">Not at all</button>
+                        <button class="opt-btn" onclick="this.parentElement.querySelectorAll('.opt-btn').forEach(b=>b.style.background='white'); this.style.background='#e6f0ec'">Several days</button>
+                        <button class="opt-btn" onclick="this.parentElement.querySelectorAll('.opt-btn').forEach(b=>b.style.background='white'); this.style.background='#e6f0ec'">Nearly every day</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        // 5. Add the Submit Button and Result Area
+        content.innerHTML += `
+            <button onclick="processResults('${type}')" style="background:var(--primary); color:white; border:none; width:100%; padding:15px; border-radius:10px; cursor:pointer; margin-top:20px;">
+                Submit Test
+            </button>
+            <div id="innerResult" style="display:none; margin-top:20px; padding:15px; background:#f0f7f4; border-radius:10px; border:1px solid var(--primary);">
+            </div>
+        `;
+
+        // 6. Show the Overlay
+        document.getElementById('quizOverlay').style.display = 'flex';
+    }
+
+    function processResults(type) {
+        const resDiv = document.getElementById('innerResult');
+        resDiv.style.display = "block";
+        resDiv.innerHTML = `
+            <h4 style="color:var(--primary); margin-top:0;">Assessment Complete</h4>
+            <p style="font-size:14px;">Based on your responses for the <strong>${type} Test</strong>, your symptoms appear manageable. Continue monitoring your well-being with daily check-ins.</p>
+            <p style="font-size:12px; color:#666;"><em>This is not a medical diagnosis.</em></p>
+        `;
+    }
+
+    function closeQuiz() {
+        document.getElementById('quizOverlay').style.display = 'none';
+    }
+</script>
+</script>
+
+</body>
+</html>
