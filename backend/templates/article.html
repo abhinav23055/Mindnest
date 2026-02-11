@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resources | MindNest</title>
+    <style>
+        :root {
+            --primary-green: #4f7f6a;
+            --bg-light: #f9faf9;
+            --text-dark: #2f2f2f;
+        }
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding-bottom: 50px;
+        }
+        header {
+            background-color: var(--primary-green);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 1000px;
+            margin: -40px auto 0;
+            padding: 0 20px;
+        }
+        .category-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h2 {
+            color: var(--primary-green);
+            border-bottom: 2px solid #eef2f0;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .resource-card {
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 20px;
+            transition: transform 0.2s, border-color 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .resource-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-green);
+            background-color: #f4f9f7;
+        }
+        .resource-card h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: var(--primary-green);
+        }
+        .resource-card p {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+        .back-nav {
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .back-nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div style="background: #4f7f6a;">
+    <div class="back-nav">
+        <a href="/">← Back to MindNest</a>
+    </div>
+</div>
+
+<header>
+    <h1>Mental Health Resources</h1>
+    <p>Curated guides and support links from global health authorities.</p>
+</header>
+
+<div class="container">
+    <div class="category-section">
+        <h2>General Overview</h2>
+        <div class="resource-grid">
+            <a href="https://www.who.int/health-topics/mental-health" target="_blank" class="resource-card">
+                <h3>WHO Overview</h3>
+                <p>Explains what mental health is and why it matters.</p>
+            </a>
+            <a href="https://www.who.int/news-room/fact-sheets/detail/mental-disorders" target="_blank" class="resource-card">
+                <h3>WHO Fact Sheet</h3>
+                <p>Covers key facts about anxiety, depression, and more.</p>
+            </a>
+            <a href="https://www.nimh.nih.gov/health" target="_blank" class="resource-card">
+                <h3>NIMH Information Hub</h3>
+                <p>Official resources with fact sheets and brochures.</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="category-section">
+        <h2>Anxiety & Stress</h2>
+        <div class="resource-grid">
+            <a href="https://www.nimh.nih.gov/health/topics/anxiety-disorders" target="_blank" class="resource-card">
+                <h3>NIMH – Anxiety Disorders</h3>
+                <p>Symptoms, treatments, and support options.</p>
+            </a>
+            <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+                <h3>Mental Health UK</h3>
+                <p>Self-help tips and support guidance.</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="category-section">
+        <h2>Depression</h2>
+        <div class="resource-grid">
+            <a href="https://www.nimh.nih.gov/health/topics/depression" target="_blank" class="resource-card">
+                <h3>NIMH – Depression</h3>
+                <p>Comprehensive information on depression symptoms and treatments.</p>
+            </a>
+            <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+                <h3>Mental Health UK</h3>
+                <p>Self-help tips and support guidance.</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="category-section">
+        <h2>ADHD</h2>
+        <div class="resource-grid">
+            <a href="https://www.nimh.nih.gov/health/topics/attention-deficit-hyperactivity-disorder-adhd" target="_blank" class="resource-card">
+                <h3>NIMH – ADHD</h3>
+                <p>Symptoms, diagnosis, and treatment options.</p>
+            </a>
+            <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+                <h3>Mental Health UK</h3>
+                <p>Self-help tips and support guidance.</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="category-section">
+        <h2>OCD & Related Disorders</h2>
+        <div class="resource-grid">
+            <a href="https://www.nimh.nih.gov/health/topics/obsessive-compulsive-disorder-ocd" target="_blank" class="resource-card">
+                <h3>NIMH – OCD</h3>
+                <p>Symptoms, diagnosis, and treatment options.</p>
+            </a>
+            <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+                <h3>Mental Health UK</h3>
+                <p>Self-help tips and support guidance.</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="category-section">
+        <h2>Bipolar Disorder</h2>
+        <div class="resource-grid">
+            <a href="https://www.nimh.nih.gov/health/topics/bipolar-disorder" target="_blank" class="resource-card">
+                <h3>NIMH – Bipolar Disorder</h3>
+                <p>Symptoms, diagnosis, and treatment options.</p>
+            </a>
+            <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+                <h3>Mental Health UK</h3>
+                <p>Self-help tips and support guidance.</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="category-section">
+        <h2>psychosis & Schizophrenia</h2>
+        <div class="resource-grid">
+            <a href="https://www.nimh.nih.gov/health/topics/schizophrenia" target="_blank" class="resource-card">
+                <h3>NIMH – Schizophrenia</h3>
+                <p>Symptoms, diagnosis, and treatment options.</p>
+            </a>
+            <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+                <h3>Mental Health UK</h3>
+                <p>Self-help tips and support guidance.</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="category-section">
+        <h2>Eating Disorders</h2>
+        <div class="resource-grid">
+            <a href="https://www.nimh.nih.gov/health/topics/eating-disorders" target="_blank" class="resource-card">
+                <h3>NIMH – Eating Disorders</h3>
+                <p>Symptoms, diagnosis, and treatment options.</p>
+            </a>
+            <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+                <h3>Mental Health UK</h3>
+                <p>Self-help tips and support guidance.</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="category-section">
+        <h2>Addiction & Habbit challenges</h2>
+        <div class="resource-grid">
+            <a href="https://www.nimh.nih.gov/health/topics/substance-use-disorders" target="_blank" class="resource-card">
+                <h3>NIMH – Substance Use Disorders</h3>
+                <p>Symptoms, diagnosis, and treatment options.</p>
+            </a>
+            <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+                <h3>Mental Health UK</h3>
+                <p>Self-help tips and support guidance.</p>
+            </a>
+        </div>
+    </div>
+    
+    <div class="category-section">
+        <h2>Postpartum Depression</h2>
+        <div class="resource-grid">
+            <a href="https://www.nimh.nih.gov/health/topics/postpartum-depression" target="_blank" class="resource-card">
+                <h3>NIMH – Postpartum Depression</h3>
+                <p>Symptoms, diagnosis, and treatment options.</p>
+            </a>
+            <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+                <h3>Mental Health UK</h3>
+                <p>Self-help tips and support guidance.</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="category-section">
+        <h2>Child & Teen Mental Health</h2>
+        <div class="resource-grid">
+            <a href="https://www.nimh.nih.gov/health/topics/child-and-adolescent-mental-health" target="_blank" class="resource-card">
+                <h3>NIMH – Child & Teen Mental Health</h3>
+                <p>Symptoms, diagnosis, and treatment options.</p>
+            </a>
+            <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+                <h3>Mental Health UK</h3>
+                <p>Self-help tips and support guidance.</p>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+</html>
