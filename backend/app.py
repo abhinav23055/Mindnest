@@ -19,16 +19,18 @@ def init_db():
     ''')
     
     # Table for Daily Well-being
+    # Table for Daily Well-being
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS checkins (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            mood INTEGER,
-            energy INTEGER,
-            stress INTEGER,
-            date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
+    CREATE TABLE IF NOT EXISTS checkins (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        mood INTEGER,
+        energy INTEGER,
+        stress INTEGER,
+        notes TEXT,  -- <--- ADD THIS LINE
+        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+''')
     connection.commit()
     connection.close()
 
@@ -53,6 +55,9 @@ def dashboard():
 @app.route('/screening')
 def screening_page():
     return render_template('screening.html')
+@app.route('/article')
+def articles_page():
+    return render_template('article.html')
 
 # --- API ROUTES (The "Engine") ---
 @app.route('/api/history/<int:user_id>', methods=['GET'])
@@ -108,8 +113,11 @@ def checkin():
     data = request.json
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO checkins (user_id, mood, energy, stress) VALUES (?, ?, ?, ?)',
-                   (data.get('user_id'), data.get('mood'), data.get('energy'), data.get('stress')))
+    # Updated to include notes
+    cursor.execute('''
+        INSERT INTO checkins (user_id, mood, energy, stress, notes) 
+        VALUES (?, ?, ?, ?, ?)
+    ''', (data.get('user_id'), data.get('mood'), data.get('energy'), data.get('stress'), data.get('notes', '')))
     conn.commit()
     conn.close()
     return jsonify({"message": "Check-in saved!"}), 201
