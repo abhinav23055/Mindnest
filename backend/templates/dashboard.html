@@ -125,12 +125,13 @@
             </div>
         </div>
 
-        <div class="logout" onclick="logout()">Logout</div>
+ <div class="logout" onclick="logout()">Logout</div>   
     </div>
 
     <script>
         const userId = localStorage.getItem('user_id');
 
+        // Redirect if not logged in
         if (!userId) {
             window.location.href = "/signup"; 
         }
@@ -153,7 +154,7 @@
                     
                     let message = "Check-in saved! Thank you for taking a moment for yourself.";
                     if (stress >= 4 && energy <= 2) {
-                        message = "<strong>MindNest Note:</strong> It looks like you're carrying a lot right now. Take a deep breath. You're doing great.";
+                        message = "<strong>MindNest Note:</strong> It looks like you're carrying a lot right now. Take a deep breath.";
                     }
 
                     feedbackText.innerHTML = message;
@@ -162,8 +163,12 @@
                     setTimeout(() => { feedbackBox.style.display = 'none'; }, 6000);
                     
                     if (isHistoryVisible) loadHistory(); 
+                } else {
+                    alert("Failed to save check-in.");
                 }
-            } catch (err) { console.error("Save error:", err); }
+            } catch (err) { 
+                console.error("Save error:", err); 
+            }
         }
 
         let isHistoryVisible = false;
@@ -201,45 +206,15 @@
                             <td>${entry.stress}/5</td>
                         </tr>`;
                 });
-            } catch (e) { console.error("History error:", e); }
+            } catch (e) { 
+                console.error("History error:", e); 
+            }
         }
 
         function logout() {
             localStorage.clear();
-            window.location.href = "/";
+            window.location.href = "/signup";
         }
-    </script>
-</body>
-</html>
-        // DEBUG: Check if we are logged in
-// const userId = localStorage.getItem('user_id');
-// console.log("Current User ID:", userId); // This shows up in the 'Inspect' console
-
-// if (!userId) {
-//     alert("No user found! Redirecting to login...");
-//     window.location.href = "/signup"; 
-// }
-
-async function submitCheckin() {
-    const mood = document.getElementById('mood').value;
-    const energy = document.getElementById('energy').value;
-    const stress = document.getElementById('stress').value;
-
-    const response = await fetch('/api/checkin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-            user_id: userId, 
-            mood: parseInt(mood), 
-            energy: parseInt(energy), 
-            stress: parseInt(stress) 
-        })
-    });
-
-    if (response.ok) {
-        alert("Check-in saved successfully!");
-    }
-}
     </script>
 </body>
 </html>

@@ -4,70 +4,199 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About | MindNest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-green: #5b8c7a;
-            --bg-light: #f4f9f7;
-            --text-dark: #333;
+            --primary: #5b8c7a;
+            --primary-soft: rgba(91, 140, 122, 0.1);
+            --dark: #2d3436;
+            --glass: rgba(255, 255, 255, 0.8);
         }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: white;
-            color: var(--text-dark);
             margin: 0;
+            color: var(--dark);
+            background: #fdfdfd;
             line-height: 1.6;
+            overflow-x: hidden;
         }
-        .container {
-            max-width: 800px;
-            margin: 100px auto;
-            padding: 0 20px;
+
+        /* --- Animated Background Elements --- */
+        .blob {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: var(--primary-soft);
+            filter: blur(80px);
+            border-radius: 50%;
+            z-index: -1;
+            animation: move 20s infinite alternate;
+        }
+
+        @keyframes move {
+            from { transform: translate(-10%, -10%); }
+            to { transform: translate(20%, 20%); }
+        }
+
+        /* --- Hero --- */
+        .hero {
+            padding: 100px 20px;
             text-align: center;
         }
-        .badge {
-            background-color: var(--bg-light);
-            color: var(--primary-green);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+
+        h1 { font-size: 4rem; font-weight: 800; margin-bottom: 10px; letter-spacing: -2px; }
+        .highlight { color: var(--primary); }
+
+        /* --- Grid & Cards --- */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
         }
-        h1 {
-            font-size: 2.5rem;
-            color: var(--text-dark);
-            margin-top: 20px;
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
         }
-        span.highlight {
-            color: var(--primary-green);
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(91, 140, 122, 0.1);
         }
-        p {
-            font-size: 1.1rem;
-            color: #666;
-            margin-bottom: 40px;
+
+        .card h3 { color: var(--primary); font-size: 1.5rem; }
+
+        /* --- Modals (Popups) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
         }
-        .back-btn {
-            background-color: var(--primary-green);
+
+        .modal-content {
+            background: white;
+            padding: 50px;
+            border-radius: 30px;
+            max-width: 600px;
+            width: 90%;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+
+        .close-btn {
+            position: absolute;
+            top: 20px; right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #ccc;
+        }
+
+        /* --- CTA --- */
+        .cta { text-align: center; padding: 60px 0; }
+        .btn {
+            background: var(--primary);
             color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
+            padding: 18px 40px;
+            border-radius: 50px;
             text-decoration: none;
-            transition: opacity 0.3s;
+            font-weight: 600;
+            display: inline-block;
+            transition: 0.3s;
         }
-        .back-btn:hover {
-            opacity: 0.9;
-        }
+        .btn:hover { background: #4a7364; box-shadow: 0 10px 20px rgba(91, 140, 122, 0.3); }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <span class="badge">Our Mission</span>
+
+    <div class="blob"></div>
+
+    <section class="hero">
         <h1>Nurturing <span class="highlight">Mental Clarity</span></h1>
-        <p>
-            MindNest was built to provide a non-clinical safe space for reflection. 
-            We believe that by tracking small daily patterns in mood and energy, 
-            anyone can gain better insights into their well-being.
-        </p>
-        <a href="/" class="back-btn">← Back to Home</a>
+        <p style="font-size: 1.2rem; color: #666;">Click on a tile to explore our vision.</p>
+    </section>
+
+    <div class="content-grid">
+        <div class="card" onclick="openModal('mission')">
+            <h3>Our Mission →</h3>
+            <p>Why we believe in a digital sanctuary for your thoughts and daily patterns.</p>
+        </div>
+        <div class="card" onclick="openModal('privacy')">
+            <h3>Privacy DNA →</h3>
+            <p>Your data isn't just "safe"—it's yours. Learn about our encryption standards.</p>
+        </div>
+        <div class="card" onclick="openModal('tech')">
+            <h3>The Science →</h3>
+            <p>How we use low-friction tracking to identify mood cycles without the stress.</p>
+        </div>
     </div>
+
+    <div class="cta">
+        <a href="/" class="btn">Start Your Journey</a>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div id="modalText"></div>
+        </div>
+    </div>
+
+    <script>
+        const content = {
+            mission: `
+                <h2>Our Mission</h2>
+                <p>MindNest was founded on the principle that <strong>mental wellness shouldn't be a chore</strong>. We built this for those who feel overwhelmed by traditional journals but still want to see the "big picture" of their life.</p>
+                <p>We aim to reduce cognitive load by focusing on simple, visual patterns that help you identify what makes you feel best.</p>
+            `,
+            privacy: `
+                <h2>Privacy First</h2>
+                <p>In the age of data mining, we take a different path. MindNest uses <strong>end-to-end local storage</strong> and zero-knowledge architecture. This means we don't sell your data, we don't track your identity, and your reflections stay where they belong—with you.</p>
+            `,
+            tech: `
+                <h2>The Science of Small Wins</h2>
+                <p>Studies show that the act of "naming your feeling" can reduce the intensity of negative emotions. MindNest uses a "Micro-Journaling" framework that lets you log your state in under 5 seconds, making it sustainable for long-term growth.</p>
+            `
+        };
+
+        function openModal(type) {
+            document.getElementById('modalText').innerHTML = content[type];
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+        // Close on clicking outside
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('modalOverlay')) {
+                closeModal();
+            }
+        }
+    </script>
 </body>
 </html>
