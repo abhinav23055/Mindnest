@@ -62,6 +62,15 @@
 
         @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .dashboard-container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        h2 { color: #4f7f6a; margin-bottom: 20px; }
+        .checkin-group { margin-bottom: 25px; }
+        label { display: block; margin-bottom: 10px; font-weight: 500; color: #555; }
+        input[type="range"] { width: 100%; accent-color: #4f7f6a; cursor: pointer; }
+        .range-labels { display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-top: 5px; }
+        .btn { background: #4f7f6a; color: white; padding: 12px 24px; border-radius: 30px; border: none; cursor: pointer; width: 100%; font-size: 16px; transition: 0.3s; }
+        .btn:hover { background: #3d6353; }
+        .logout { text-align: center; margin-top: 20px; cursor: pointer; color: #888; text-decoration: underline; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -199,6 +208,38 @@
             localStorage.clear();
             window.location.href = "/";
         }
+    </script>
+</body>
+</html>
+        // DEBUG: Check if we are logged in
+// const userId = localStorage.getItem('user_id');
+// console.log("Current User ID:", userId); // This shows up in the 'Inspect' console
+
+// if (!userId) {
+//     alert("No user found! Redirecting to login...");
+//     window.location.href = "/signup"; 
+// }
+
+async function submitCheckin() {
+    const mood = document.getElementById('mood').value;
+    const energy = document.getElementById('energy').value;
+    const stress = document.getElementById('stress').value;
+
+    const response = await fetch('/api/checkin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            user_id: userId, 
+            mood: parseInt(mood), 
+            energy: parseInt(energy), 
+            stress: parseInt(stress) 
+        })
+    });
+
+    if (response.ok) {
+        alert("Check-in saved successfully!");
+    }
+}
     </script>
 </body>
 </html>

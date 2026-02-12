@@ -20,6 +20,7 @@
 
     /* ---------- NAVBAR ---------- */
     nav {
+      background-color: #4f7f6a;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -33,6 +34,7 @@
       font-weight: 600;
       font-size: 18px;
       color: #4f7f6a;
+      color: #ffffff;
     }
 
     .nav-buttons {
@@ -44,16 +46,26 @@
     .login {
       text-decoration: none;
       color: #4f7f6a;
+      color: #ffffff;
+      font-size: 14px;
+    }
+
+    .Articles {
+      text-decoration: none;
+      color: #ffffff;
       font-size: 14px;
     }
 
     .get-started {
       background: #4f7f6a;
       color: white;
+      background: #ffffff;
+      color: #4f7f6a;
       padding: 10px 18px;
       border-radius: 20px;
       text-decoration: none;
       font-size: 14px;
+      font-weight: 500;
     }
 
     /* ---------- HERO SECTION ---------- */
@@ -153,7 +165,7 @@
     <div class="nav-buttons">
       <a href="/dashboard" class="login">Dashboard</a>
       <a href="/signup" class="login">Login</a>
-      <a href="/article" class="Articles">Articles</a>
+      <a href="/articles" class="Articles">Articles</a>
       <a href="/signup" class="get-started">Get Started</a>
       <a href="/screening" class="get-started">Wellness Screening</a>
     </div>
@@ -174,10 +186,9 @@
     </p>
 
     <div class="hero-buttons">
-      <a href="#" class="primary-btn">Start Your Journey →</a>
-      <a href="#" class="secondary-btn">Learn More</a>
+      <a href="/signup" class="primary-btn">Start Your Journey →</a>
+      <a href="/about" class="secondary-btn">Learn More</a>
     </div>
-    
 
     <div class="disclaimer">
       * This is not a medical or diagnostic tool. For professional help,

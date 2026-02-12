@@ -31,6 +31,16 @@ def init_db():
         date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
 ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS checkins (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            mood INTEGER,
+            energy INTEGER,
+            stress INTEGER,
+            date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
     connection.commit()
     connection.close()
 
@@ -48,6 +58,11 @@ def signup_page():
     # Serves the login/signup forms (auth.html)
     return render_template('auth.html')
 
+@app.route('/about')
+def about():
+    # Serves the about page
+    return render_template('about.html')
+
 @app.route('/dashboard')
 def dashboard():
     # Serves the dashboard after login
@@ -55,9 +70,9 @@ def dashboard():
 @app.route('/screening')
 def screening_page():
     return render_template('screening.html')
-@app.route('/article')
+@app.route('/articles')
 def articles_page():
-    return render_template('article.html')
+    return render_template('articles.html')
 
 # --- API ROUTES (The "Engine") ---
 @app.route('/api/history/<int:user_id>', methods=['GET'])
@@ -79,6 +94,9 @@ def get_history(user_id):
             "date": row[3]
         })
     return jsonify(history)
+
+# --- API ROUTES (The "Engine") ---
+
 @app.route('/api/signup', methods=['POST'])
 def signup():
     data = request.json
@@ -118,6 +136,8 @@ def checkin():
         INSERT INTO checkins (user_id, mood, energy, stress, notes) 
         VALUES (?, ?, ?, ?, ?)
     ''', (data.get('user_id'), data.get('mood'), data.get('energy'), data.get('stress'), data.get('notes', '')))
+    cursor.execute('INSERT INTO checkins (user_id, mood, energy, stress) VALUES (?, ?, ?, ?)',
+                   (data.get('user_id'), data.get('mood'), data.get('energy'), data.get('stress')))
     conn.commit()
     conn.close()
     return jsonify({"message": "Check-in saved!"}), 201
@@ -125,3 +145,4 @@ def checkin():
 if __name__ == '__main__':
     app.run(debug=True)
     
+    app.run(debug=True)
