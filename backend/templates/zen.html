@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindNest | Zen Zone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3a5a40; 
+            --accent: #a3b18a;
+            --bg-base: #fdfdfd;
+            --text-main: #344e41;
+            --text-muted: #588157;
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background: var(--bg-base); 
+            color: var(--text-main); 
+            min-height: 100vh;
+            display: flex; 
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 10%;
+            background: rgba(253, 253, 253, 0.8);
+            backdrop-filter: blur(15px);
+            z-index: 100;
+        }
+
+        .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -1px; color: var(--primary); text-decoration: none; }
+        .back-link { text-decoration: none; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .zen-card {
+            max-width: 500px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .badge {
+            border: 1px solid var(--accent);
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
+        }
+
+        h1 { font-size: 2.5rem; font-weight: 800; color: var(--primary); letter-spacing: -1.5px; margin-bottom: 10px; }
+        #instruction { font-size: 1.1rem; color: var(--text-muted); font-weight: 400; min-height: 1.7em; margin-bottom: 20px; }
+
+        .visual-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .outer-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 1px solid rgba(163, 177, 138, 0.3);
+            border-radius: 50%;
+        }
+
+        .breathing-bubble {
+            width: 100px;
+            height: 100px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 40px rgba(58, 90, 64, 0.2);
+            transition: transform 4s linear, background 4s linear;
+            z-index: 2;
+        }
+
+        .inhale { transform: scale(2.4); background: var(--accent); }
+        .exhale { transform: scale(1); background: var(--primary); }
+
+        .controls { 
+            margin-top: 50px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .btn-zen {
+            background: var(--primary);
+            color: var(--white);
+            padding: 18px 45px;
+            border-radius: 16px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(58, 90, 64, 0.15);
+        }
+
+        .btn-zen:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(58, 90, 64, 0.25); }
+        .btn-zen.stop { background: #d64d4d; }
+
+        footer { padding: 40px; font-size: 0.75rem; color: #aaa; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <audio id="zen-audio" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <nav>
+        <a href="/" class="logo">MindNest</a>
+        <a href="/dashboard" class="back-link">Return to Dashboard</a>
+    </nav>
+
+    <main>
+        <div class="zen-card">
+            <div class="badge">Box Breathing Guide</div>
+            <h1 id="timer-display">Zen Zone</h1>
+            <p id="instruction">Click below to begin your 60-second reset.</p>
+
+            <div class="visual-container">
+                <div class="outer-ring"></div>
+                <div id="bubble" class="breathing-bubble"></div>
+            </div>
+
+            <div class="controls">
+                <button id="start-btn" class="btn-zen" onclick="toggleSession()">Start Session</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 MindNest. A BCA Capstone Project.</p>
+    </footer>
+
+    <script>
+        let isActive = false;
+        let sessionInterval;
+        let countdownInterval;
+        let stage = 0;
+
+        function toggleSession() {
+            const btn = document.getElementById('start-btn');
+            const bubble = document.getElementById('bubble');
+            const instruction = document.getElementById('instruction');
+            const audio = document.getElementById('zen-audio');
+
+            if (!isActive) {
+                // START SESSION
+                isActive = true;
+                btn.innerText = "End Session";
+                btn.classList.add('stop');
+                
+                // Play Soothing Audio
+                audio.currentTime = 0;
+                audio.volume = 0.4;
+                audio.play();
+                
+                runBreathingCycle();
+            } else {
+                // STOP SESSION
+                isActive = false;
+                clearTimeout(sessionInterval);
+                clearInterval(countdownInterval);
+                
+                // Stop Audio
+                audio.pause();
+                
+                btn.innerText = "Start Session";
+                btn.classList.remove('stop');
+                bubble.className = "breathing-bubble";
+                bubble.innerText = "";
+                instruction.innerText = "Session ended. Take a moment for yourself.";
+                stage = 0;
+            }
+        }
+
+        function runBreathingCycle() {
+            if (!isActive) return;
+
+            const bubble = document.getElementById('bubble');
+            const instruction = document.getElementById('instruction');
+
+            const stages = [
+                { msg: "Inhale slowly...", class: "breathing-bubble inhale" },
+                { msg: "Hold your breath...", class: "breathing-bubble inhale" },
+                { msg: "Exhale gently...", class: "breathing-bubble exhale" },
+                { msg: "Hold and rest...", class: "breathing-bubble exhale" }
+            ];
+
+            const current = stages[stage % 4];
+            instruction.innerText = current.msg;
+            bubble.className = current.class;
+            
+            let count = 4;
+            bubble.innerText = count;
+            
+            // Sync countdown numbers inside the bubble
+            clearInterval(countdownInterval);
+            countdownInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    bubble.innerText = count;
+                } else {
+                    clearInterval(countdownInterval);
+                }
+            }, 1000);
+
+            stage++;
+            sessionInterval = setTimeout(runBreathingCycle, 4000);
+        }
+    </script>
+</body>
+</html>
