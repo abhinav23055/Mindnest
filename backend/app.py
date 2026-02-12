@@ -18,19 +18,7 @@ def init_db():
         )
     ''')
     
-    # Table for Daily Well-being
-    # Table for Daily Well-being
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS checkins (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER,
-        mood INTEGER,
-        energy INTEGER,
-        stress INTEGER,
-        notes TEXT,  -- <--- ADD THIS LINE
-        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-''')
+    # Table for Daily Well-being (Reverted: NO notes column)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS checkins (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,61 +29,39 @@ def init_db():
             date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
+    
     connection.commit()
     connection.close()
 
 init_db()
 
-# --- NAVIGATION ROUTES (The "Doors") ---
+# --- NAVIGATION ROUTES ---
 
 @app.route('/')
 def home():
-    # Serves the landing page first
     return render_template('index.html') 
 
 @app.route('/signup')
 def signup_page():
-    # Serves the login/signup forms (auth.html)
     return render_template('auth.html')
 
 @app.route('/about')
 def about():
-    # Serves the about page
     return render_template('about.html')
 
 @app.route('/dashboard')
 def dashboard():
-    # Serves the dashboard after login
     return render_template('dashboard.html')
+
 @app.route('/screening')
 def screening_page():
     return render_template('screening.html')
+
 @app.route('/articles')
 def articles_page():
     return render_template('articles.html')
 
-# --- API ROUTES (The "Engine") ---
-@app.route('/api/history/<int:user_id>', methods=['GET'])
-def get_history(user_id):
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-    # Select all checkins for this specific user, newest first
-    cursor.execute('SELECT mood, energy, stress, date FROM checkins WHERE user_id = ? ORDER BY date DESC', (user_id,))
-    rows = cursor.fetchall()
-    conn.close()
-    
-    # Convert the database rows into a list of dictionaries (JSON)
-    history = []
-    for row in rows:
-        history.append({
-            "mood": row[0],
-            "energy": row[1],
-            "stress": row[2],
-            "date": row[3]
-        })
-    return jsonify(history)
-
-# --- API ROUTES (The "Engine") ---
+# --- API ROUTES ---
 
 @app.route('/api/signup', methods=['POST'])
 def signup():
@@ -131,18 +97,44 @@ def checkin():
     data = request.json
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-    # Updated to include notes
+    # Reverted: No notes field in the INSERT statement
     cursor.execute('''
-        INSERT INTO checkins (user_id, mood, energy, stress, notes) 
-        VALUES (?, ?, ?, ?, ?)
-    ''', (data.get('user_id'), data.get('mood'), data.get('energy'), data.get('stress'), data.get('notes', '')))
-    cursor.execute('INSERT INTO checkins (user_id, mood, energy, stress) VALUES (?, ?, ?, ?)',
-                   (data.get('user_id'), data.get('mood'), data.get('energy'), data.get('stress')))
+        INSERT INTO checkins (user_id, mood, energy, stress) 
+        VALUES (?, ?, ?, ?)
+    ''', (data.get('user_id'), data.get('mood'), data.get('energy'), data.get('stress')))
     conn.commit()
     conn.close()
     return jsonify({"message": "Check-in saved!"}), 201
 
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route('/api/history/<int:user_id>', methods=['GET'])
+def get_history(user_id):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT mood, energy, stress, date FROM checkins WHERE user_id = ? ORDER BY date DESC', (user_id,))
+    rows = cursor.fetchall()
+    conn.close()
     
+    history = []
+    for row in rows:
+        history.append({
+            "mood": row[0],
+            "energy": row[1],
+            "stress": row[2],
+            "date": row[3]
+        })
+    return jsonify(history)
+
+@app.route('/api/delete_history/<int:user_id>', methods=['DELETE'])
+def delete_history(user_id):
+    try:
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM checkins WHERE user_id = ?', (user_id,))
+        conn.commit()
+        conn.close()
+        return jsonify({"message": "History cleared!"}), 200
+    except Exception as e:
+        return jsonify({"message": "Error", "error": str(e)}), 500
+
+if __name__ == '__main__':
     app.run(debug=True)

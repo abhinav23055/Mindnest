@@ -3,82 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <title>MindNest | Assessment Center</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #4f7f6a;
             --secondary: #e6f0ec;
             --text: #2f2f2f;
             --bg: #f9faf9;
+            --danger: #d9534f;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 40px 20px; }
+        
         .container { max-width: 1000px; margin: 0 auto; }
         
+        /* Navigation back */
+        .back-nav { margin-bottom: 20px; }
+        .back-nav a { text-decoration: none; color: var(--primary); font-weight: 600; display: flex; align-items: center; gap: 5px; }
+
         /* Hero Section */
         .hero { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 40px; }
-        h1 { color: var(--primary); font-size: 2.5rem; margin-bottom: 15px; }
+        h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 15px; }
         .hero p { color: #666; line-height: 1.6; max-width: 700px; }
 
         /* Grid Layout */
-        .test-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .test-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
         
         .test-card {
             background: var(--primary);
             color: white;
-            padding: 20px 25px;
-            border-radius: 12px;
+            padding: 20px;
+            border-radius: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
+            transition: all 0.3s ease;
             border: none;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             text-align: left;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        .test-card:hover { transform: translateY(-3px); background: #3d6353; }
-        .plus-icon { font-size: 1.5rem; font-weight: 300; }
+        .test-card:hover { transform: translateY(-5px); background: #3d6353; box-shadow: 0 8px 15px rgba(0,0,0,0.15); }
+        .plus-icon { font-size: 1.4rem; opacity: 0.8; }
 
         /* Quiz Overlay */
-        #quizOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
-        .quiz-modal { background: white; width: 90%; max-width: 600px; padding: 30px; border-radius: 20px; max-height: 80vh; overflow-y: auto; }
-        .opt-btn { width: 100%; text-align: left; padding: 12px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; background: white; cursor: pointer; transition: 0.2s; }
+        #quizOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .quiz-modal { background: white; width: 95%; max-width: 650px; padding: 35px; border-radius: 25px; max-height: 85vh; overflow-y: auto; position: relative; }
+        
+        .opt-btn { width: 100%; text-align: left; padding: 14px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; background: white; cursor: pointer; transition: 0.2s; font-size: 15px; }
         .opt-btn:hover { background: var(--secondary); border-color: var(--primary); }
-        .close-btn { float: right; cursor: pointer; color: #888; }
+        
+        .close-btn { position: sticky; top: 0; float: right; cursor: pointer; color: #888; font-weight: bold; background: white; padding: 5px; border-radius: 50%; }
+        
+        /* Results Style */
+        .report-box { padding: 25px; border: 2px solid var(--primary); border-radius: 20px; background: white; margin-top: 20px; }
+
+        @media print {
+            body * { visibility: hidden; }
+            #pdfContent, #pdfContent * { visibility: visible; }
+            #pdfContent { position: absolute; left: 0; top: 0; width: 100%; border: none !important; }
+            .no-print { display: none !important; }
+        }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div class="back-nav">
+        <a href="/dashboard">← Back to Dashboard</a>
+    </div>
+
     <div class="hero">
-        <h1>Take a Mental Health Test</h1>
-        <p>Online screening is one of the quickest and easiest ways to see what mental health symptoms you might be experiencing. It’s <strong>free, confidential, and backed by science.</strong></p>
+        <h1>Assessment Center</h1>
+        <p>Take a confidential screening to better understand your mental health. These tools are <strong>clinically validated</strong> to help you identify symptoms early.</p>
     </div>
 
     <div class="test-grid">
-    <button class="test-card" onclick="openQuiz('Depression')">DEPRESSION TEST <span class="plus-icon">+</span></button>
-    <button class="test-card" onclick="openQuiz('Anxiety')">ANXIETY TEST <span class="plus-icon">+</span></button>
-    <button class="test-card" onclick="openQuiz('ADHD')">ADHD TEST <span class="plus-icon">+</span></button>
-    <button class="test-card" onclick="openQuiz('OCD')">OCD TEST <span class="plus-icon">+</span></button>
-    <button class="test-card" onclick="openQuiz('Bipolar')">BIPOLAR TEST <span class="plus-icon">+</span></button>
-    <button class="test-card" onclick="openQuiz('Psychosis')">PSYCHOSIS TEST <span class="plus-icon">+</span></button>
-    <button class="test-card" onclick="openQuiz('Eating')">EATING DISORDER TEST <span class="plus-icon">+</span></button>
-    <button class="test-card" onclick="openQuiz('PTSD')">PTSD TEST <span class="plus-icon">+</span></button>
-    <button class="test-card" onclick="openQuiz('Addiction')">ADDICTION TEST <span class="plus-icon">+</span></button>
-    <button class="test-card" onclick="openQuiz('SocialAnxiety')">SOCIAL ANXIETY TEST <span class="plus-icon">+</span></button>
-    <button class="test-card" onclick="openQuiz('Postpartum')">POSTPARTUM TEST <span class="plus-icon">+</span></button>
-    <button class="test-card" onclick="openQuiz('Child')">CHILD MENTAL HEALTH <span class="plus-icon">+</span></button>
-</div>
+        <button class="test-card" onclick="openQuiz('Depression')">DEPRESSION <span class="plus-icon">+</span></button>
+        <button class="test-card" onclick="openQuiz('Anxiety')">ANXIETY <span class="plus-icon">+</span></button>
+        <button class="test-card" onclick="openQuiz('ADHD')">ADHD <span class="plus-icon">+</span></button>
+        <button class="test-card" onclick="openQuiz('OCD')">OCD <span class="plus-icon">+</span></button>
+        <button class="test-card" onclick="openQuiz('Bipolar')">BIPOLAR <span class="plus-icon">+</span></button>
+        <button class="test-card" onclick="openQuiz('Psychosis')">PSYCHOSIS <span class="plus-icon">+</span></button>
+        <button class="test-card" onclick="openQuiz('Eating')">EATING DISORDER <span class="plus-icon">+</span></button>
+        <button class="test-card" onclick="openQuiz('PTSD')">PTSD <span class="plus-icon">+</span></button>
+        <button class="test-card" onclick="openQuiz('Addiction')">ADDICTION <span class="plus-icon">+</span></button>
+        <button class="test-card" onclick="openQuiz('SocialAnxiety')">SOCIAL ANXIETY <span class="plus-icon">+</span></button>
+        <button class="test-card" onclick="openQuiz('Postpartum')">POSTPARTUM <span class="plus-icon">+</span></button>
+        <button class="test-card" onclick="openQuiz('Child')">CHILD WELLNESS <span class="plus-icon">+</span></button>
+    </div>
 </div>
 
 <div id="quizOverlay">
     <div class="quiz-modal">
-        <span class="close-btn" onclick="closeQuiz()">✕ Close</span>
-        <h2 id="quizTitle" style="color: var(--primary);">Test</h2>
-        <hr style="margin: 20px 0; opacity: 0.2;">
+        <span class="close-btn" onclick="closeQuiz()">✕</span>
+        <h2 id="quizTitle" style="color: var(--primary); margin-bottom: 5px;">Test</h2>
+        <p style="color: #888; font-size: 13px; margin-bottom: 20px;">Please select the option that best describes you over the last 2 weeks.</p>
         <div id="quizContent"></div>
     </div>
 </div>
@@ -99,102 +125,138 @@
         'Child': ["How often does your child seem sad or unhappy for long periods?", "How often does your child get very anxious about normal situations?", "How often does your child have tantrums that are hard to control?", "How often does your child have trouble concentrating on homework?", "How often does your child avoid school or friends they used to enjoy?", "How often does your child have sleep or appetite problems?", "How often does your child complain of pain without a clear medical reason?", "How often does your child seem very irritable or overly sensitive?", "How often do your child's emotions cause problems at school or home?", "How often do you feel your child is not coping well for their age?"]
     };
 
-    let responseValues = {}; // This stores the scores for the current quiz
+    let responseValues = {};
 
     function openQuiz(type) {
-        // Reset scores for the new quiz
         responseValues = {};
-        
         document.getElementById('quizTitle').innerText = type + " Assessment";
         const content = document.getElementById('quizContent');
         content.innerHTML = "";
         
-        const questions = quizData[type] || [];
-        
-        questions.forEach((q, i) => {
+        quizData[type].forEach((q, i) => {
             content.innerHTML += `
-                <div style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
-                    <p style="font-weight: 600; margin-bottom: 10px;">${i+1}. ${q}</p>
-                    <div class="options-group">
+                <div style="margin-bottom: 25px; animation: slideIn 0.3s ease;">
+                    <p style="font-weight: 600; margin-bottom: 12px; font-size: 16px;">${i+1}. ${q}</p>
+                    <div class="options-group" data-q="${i}">
                         <button class="opt-btn" onclick="recordScore(${i}, 0, this)">Not at all</button>
                         <button class="opt-btn" onclick="recordScore(${i}, 1, this)">Sometimes</button>
                         <button class="opt-btn" onclick="recordScore(${i}, 2, this)">Often</button>
                         <button class="opt-btn" onclick="recordScore(${i}, 3, this)">Very often</button>
                     </div>
-                </div>
-            `;
+                </div>`;
         });
         
         content.innerHTML += `
-            <button id="submitTestBtn" onclick="processResults('${type}')" style="background:var(--primary); color:white; border:none; width:100%; padding:15px; border-radius:10px; cursor:pointer; margin-top:20px; font-weight:bold;">
+            <button id="submitTestBtn" onclick="processResults('${type}')" style="background:var(--primary); color:white; border:none; width:100%; padding:16px; border-radius:12px; cursor:pointer; margin-top:20px; font-weight:bold; font-size: 16px;">
                 Submit Assessment
             </button>
-            <div id="innerResult" style="display:none; margin-top:20px; padding:20px; background:#f0f7f4; border-radius:10px; border:1px solid var(--primary); animation: slideIn 0.3s ease;">
-            </div>
-        `;
+            <div id="innerResult" style="display:none; margin-top:20px;"></div>`;
         
         document.getElementById('quizOverlay').style.display = 'flex';
+        document.querySelector('.quiz-modal').scrollTop = 0;
     }
 
     function recordScore(questionIndex, value, btn) {
-        // Highlight the selected button and un-highlight others in the same group
-        const parent = btn.parentElement;
-        parent.querySelectorAll('.opt-btn').forEach(b => {
+        const group = btn.parentElement;
+        group.querySelectorAll('.opt-btn').forEach(b => {
             b.style.background = 'white';
             b.style.color = 'var(--text)';
+            b.style.borderColor = '#ddd';
         });
         btn.style.background = 'var(--primary)';
         btn.style.color = 'white';
-        
-        // Save the score
+        btn.style.borderColor = 'var(--primary)';
         responseValues[questionIndex] = value;
-    }
-
-    function processResults(type) {
-        const resDiv = document.getElementById('innerResult');
-        
-        // Count how many questions were answered
-        const answeredCount = Object.keys(responseValues).length;
-        const totalQuestions = quizData[type].length;
-
-        // Validation: Check if all questions are answered
-        if (answeredCount < totalQuestions) {
-            resDiv.style.display = "block";
-            resDiv.style.background = "#fff3f3";
-            resDiv.style.borderColor = "#ff4d4d";
-            resDiv.innerHTML = `<p style="color:#d93025; margin:0;">Please answer all ${totalQuestions} questions before submitting.</p>`;
-            return;
-        }
-
-        // Calculate total score
-        let totalScore = 0;
-        for (let key in responseValues) {
-            totalScore += responseValues[key];
-        }
-
-        let interpretation = "";
-        if (totalScore <= 7) interpretation = "Low signs - Continue your wellness journey.";
-        else if (totalScore <= 14) interpretation = "Mild signs - Keep an eye on your well-being.";
-        else if (totalScore <= 21) interpretation = "Moderate signs - Consider talking to someone you trust.";
-        else interpretation = "High signs - We strongly recommend professional support.";
-
-        resDiv.style.display = "block";
-        resDiv.style.background = "#f0f7f4";
-        resDiv.style.borderColor = "var(--primary)";
-        resDiv.innerHTML = `
-            <h4 style="color:var(--primary); margin-top:0;">${type} Result: ${totalScore}/30</h4>
-            <p style="font-size:14px; line-height:1.5;"><strong>Feedback:</strong> ${interpretation}</p>
-            <p style="font-size:11px; color:#666; border-top: 1px solid #ccc; margin-top:10px; padding-top:10px;">
-                Note: This tool is for awareness only and is not a medical diagnosis.
-            </p>
-        `;
-        
-        // Scroll to the result
-        resDiv.scrollIntoView({ behavior: 'smooth' });
     }
 
     function closeQuiz() {
         document.getElementById('quizOverlay').style.display = 'none';
+    }
+
+    function processResults(type) {
+        const resDiv = document.getElementById('innerResult');
+        const totalQuestions = quizData[type].length;
+        const answeredCount = Object.keys(responseValues).length;
+
+        if (answeredCount < totalQuestions) {
+            resDiv.style.display = "block";
+            resDiv.innerHTML = `<p style="color:var(--danger); font-weight:bold; text-align:center;">Please answer all ${totalQuestions} questions.</p>`;
+            return;
+        }
+
+        let totalScore = 0;
+        for (let key in responseValues) { totalScore += responseValues[key]; }
+
+        const solutions = {
+            'Anxiety': "Try the 4-7-8 breathing technique, limit caffeine, and practice 'grounding' by naming 5 things you see.",
+            'Depression': "Focus on 'Behavioral Activation'—try to do one small task today, like a 5-minute walk or making your bed.",
+            'ADHD': "Break big tasks into 10-minute chunks, use visual timers, and keep a 'distraction pad' for random thoughts.",
+            'OCD': "Practice 'Exposure and Response Prevention' by delaying a ritual by just one minute at first.",
+            'Postpartum': "Reach out to your doctor or a local support group. Prioritize rest when possible and accept help from loved ones.",
+            'Child': "Ensure a consistent routine, use positive reinforcement, and create a 'calm-down corner' with soft textures."
+        };
+
+        const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        
+        let level = "";
+        let color = "#4f7f6a";
+        if (totalScore <= 7) { level = "Low Signs"; color = "#4f7f6a"; }
+        else if (totalScore <= 14) { level = "Mild Signs"; color = "#88a070"; }
+        else if (totalScore <= 21) { level = "Moderate Signs"; color = "#d1a054"; }
+        else { level = "High Signs"; color = "#d9534f"; }
+
+        resDiv.style.display = "block";
+        resDiv.innerHTML = `
+            <div id="pdfContent" class="report-box">
+                <h2 style="color:var(--primary); text-align:center; margin-bottom: 5px;">MindNest Wellness Report</h2>
+                <p style="text-align:center; color:#666; font-size: 14px;">Date: ${today} | Category: ${type}</p>
+                <hr style="margin: 20px 0; opacity: 0.1;">
+                
+                <div style="display:flex; align-items:center; justify-content:space-around; flex-wrap:wrap; margin:20px 0;">
+                    <div style="width:140px; height: 140px;"><canvas id="resultChart"></canvas></div>
+                    <div style="text-align:left;">
+                        <p style="font-size: 14px; color: #888; margin: 0;">Total Score</p>
+                        <h1 style="margin:0; color: ${color}">${totalScore} / 30</h1>
+                        <p style="font-weight:bold; font-size: 18px; color: ${color}">${level}</p>
+                    </div>
+                </div>
+
+                <div style="background:#f0f7f4; padding:20px; border-radius:15px; margin-top:10px;">
+                    <h4 style="color:#4f7f6a; margin-bottom:8px;">💡 Coping Strategy:</h4>
+                    <p style="font-size:15px; line-height:1.6; color: #444;">${solutions[type] || "Focus on self-care, consistent sleep, and reaching out to a trusted professional for a full evaluation."}</p>
+                </div>
+
+                <p style="font-size:11px; color:#aaa; margin-top:20px; font-style:italic; text-align: center;">
+                    * This is a screening tool, not a medical diagnosis. If you are in crisis, please visit your nearest emergency room.
+                </p>
+                
+                <button class="no-print" onclick="window.print()" style="width:100%; background:var(--primary); color:white; border:none; padding:14px; border-radius:10px; cursor:pointer; font-weight:bold; margin-top:15px;">
+                    📥 Download Report (PDF)
+                </button>
+            </div>`;
+
+        // Wait for DOM to update then render chart
+        setTimeout(() => {
+            const ctx = document.getElementById('resultChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [totalScore, 30 - totalScore],
+                        backgroundColor: [color, '#f0f0f0'],
+                        borderWidth: 0,
+                        cutout: '70%'
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    plugins: { tooltip: { enabled: false } } 
+                }
+            });
+            // Scroll to bottom of modal to see results
+            document.querySelector('.quiz-modal').scrollTo({ top: 1000, behavior: 'smooth' });
+        }, 100);
     }
 </script>
 
