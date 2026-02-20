@@ -216,6 +216,7 @@ signupForm.addEventListener("submit", async (e) => {
 });
 
 // Handle Login
+// Handle Login
 loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     
@@ -223,20 +224,26 @@ loginForm.addEventListener("submit", async (e) => {
     const email = inputs[0].value;
     const password = inputs[1].value;
 
-    const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-    });
+    try {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
 
-    const result = await response.json();
-    
-    if (response.ok) {
-        // Save the User ID so the dashboard knows who is logged in
-        localStorage.setItem('user_id', result.user_id);
-        window.location.href = "/dashboard"; 
-    } else {
-        alert(result.message);
+        const result = await response.json();
+        
+        if (response.ok) {
+            // Store both ID and Name in browser memory
+            localStorage.setItem('user_id', result.user_id);
+            localStorage.setItem('first_name', result.first_name); 
+            window.location.href = "/dashboard"; 
+        } else {
+            alert(result.error || "Login failed");
+        }
+    } catch (err) {
+        console.error("Login Error:", err);
+        alert("Server is not responding.");
     }
 });
   </script>

@@ -69,6 +69,7 @@ def signup():
     try:
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
+        # Ensure the column is 'name', not 'first_name' to match your init_db
         cursor.execute('INSERT INTO users (name, email, password) VALUES (?, ?, ?)', 
                        (data.get('name'), data.get('email'), data.get('password')))
         conn.commit()
@@ -80,17 +81,24 @@ def signup():
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.json
+    email = data.get('email')
+    password = data.get('password')
+
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM users WHERE email = ? AND password = ?', 
-                   (data.get('email'), data.get('password')))
+    # Looking for 'name' because that's what you used in init_db
+    cursor.execute('SELECT id, name FROM users WHERE email = ? AND password = ?', (email, password))
     user = cursor.fetchone()
     conn.close()
 
     if user:
-        return jsonify({"message": "Login successful!", "user_id": user[0]}), 200
-    else:
-        return jsonify({"message": "Invalid email or password"}), 401
+        return jsonify({
+            "message": "Login successful",
+            "user_id": user[0],
+            "first_name": user[1] # user[1] is the 'name' from your DB
+        }), 200
+        
+    return jsonify({"error": "Invalid email or password"}), 401
 
 @app.route('/api/checkin', methods=['POST'])
 def checkin():
