@@ -49,6 +49,11 @@ def signup_page():
 def about():
     return render_template('about.html')
 
+@app.route('/zen')
+def zen_zone():
+    # This assumes zen.html is inside your 'templates' folder
+    return render_template('zen.html')
+
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
