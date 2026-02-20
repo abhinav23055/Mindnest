@@ -9,12 +9,12 @@
         :root {
             --primary: #3a5a40; 
             --accent: #a3b18a;
-            --bg-base: #fdfdfd;
+            --bg-base: #f9f9f7; /* Soft off-white to reduce eye strain */
             --text-main: #344e41;
             --text-muted: #588157;
-            --white: #ffffff;
-            --glass: rgba(255, 255, 255, 0.7);
-            --section-bg: #f4f6f4;
+            --white: #fefefe; 
+            --glass: rgba(249, 249, 247, 0.8);
+            --section-bg: #f2f2ef;
         }
 
         [data-theme="dark"] {
@@ -74,7 +74,7 @@
         /* --- Hero Section --- */
         .hero {
             text-align: center;
-            padding: 60px 10% 40px; /* Tighter spacing */
+            padding: 60px 10% 40px;
             max-width: 1100px;
             margin: 0 auto;
         }
@@ -101,7 +101,6 @@
             margin-bottom: 20px;
         }
 
-        /* --- Quote Section (New Feature) --- */
         .quote-box {
             text-align: center;
             margin: 20px auto 60px;
@@ -145,7 +144,6 @@
             margin-bottom: 25px;
         }
 
-        /* --- Zen breathing animation --- */
         .zen-dot {
             width: 10px; height: 10px;
             background: var(--primary);
@@ -177,12 +175,12 @@
     </nav>
 
     <header class="hero">
-        <div class="badge-premium">Non-Clinical Preventive Support</div>
+        <div class="badge-premium">NON-CLINICAL PREVENTIVE SUPPORT</div>
         <h1>Your mind deserves <br />a <span>refined space.</span></h1>
-        <p style="color: var(--text-muted); font-size: 1.1rem; margin-top: 20px;">A high-fidelity system designed to track emotional architecture and foster daily resilience.</p>
+        <p style="color: var(--text-muted); font-size: 1.1rem; margin-top: 20px;">A personalized sanctuary designed to help you track habits and nurture mental resilience.</p>
         
         <div class="quote-box">
-            <p id="daily-quote">"Loading mindfulness..."</p>
+            <p id="daily-quote">"Quiet the mind, and the soul will speak."</p>
         </div>
 
         <a href="/signup" class="btn-premium" style="display: inline-block;">Create Exclusive Account</a>
@@ -192,19 +190,19 @@
         <div class="feature-card">
             <div class="icon-circle">✍️</div>
             <h3>Journaling</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">Distraction-free interface built for deep reflection and long-form thought archiving.</p>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">A private, distraction-free space built for deep reflection and daily thought archiving.</p>
         </div>
 
         <div class="feature-card" onclick="window.location.href='/zen'" style="cursor: pointer;">
             <div class="icon-circle">🧘</div>
             <h3>Zen Zone</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;"><span class="zen-dot"></span>Haptic-inspired breathing guides to recalibrate your nervous system.</p>
+            <p style="color: var(--text-muted); font-size: 0.9rem;"><span class="zen-dot"></span>Interactive breathing guides to help you recalibrate and find focus.</p>
         </div>
 
         <div class="feature-card">
-            <div class="icon-circle">⚖️</div>
-            <h3>Screening</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">Clinically-validated wellness assessments (PHQ-9) to monitor patterns with precision.</p>
+            <div class="icon-circle">📊</div>
+            <h3>Daily Check-ins</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Quick, non-clinical logs to help you visualize your mood patterns and energy trends over time.</p>
         </div>
     </section>
 
@@ -216,10 +214,10 @@
 
     <footer style="padding: 60px 10%; font-size: 0.75rem; color: #aaa; text-align: center;">
         <p>&copy; 2026 MindNest. A BCA Capstone Project.</p>
+        <p style="margin-top: 10px; font-weight: 600;">*MindNest is not a medical tool. Always consult a professional for health concerns.</p>
     </footer>
 
     <script>
-        // Theme Logic
         function toggleTheme() {
             const body = document.documentElement;
             const currentTheme = body.getAttribute('data-theme');
@@ -235,7 +233,6 @@
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
 
-        // Daily Quotes Feature
         const quotes = [
             "Mindfulness means being awake. It means knowing what you are doing.",
             "The best way to capture moments is to pay attention.",
@@ -249,6 +246,21 @@
             const randomIndex = Math.floor(Math.random() * quotes.length);
             quoteElement.innerText = `"${quotes[randomIndex]}"`;
         };
+
+  (function(d, t) {
+      var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+      v.onload = function() {
+        window.voiceflow.chat.load({
+          verify: { projectID: '69980eefdbd1e9eaacdda045' },
+          url: 'https://general-runtime.voiceflow.com',
+          versionID: 'production',
+          voice: {
+            url: "https://runtime-api.voiceflow.com"
+          }
+        });
+      }
+      v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+  })(document, 'script');
     </script>
 </body>
 </html>

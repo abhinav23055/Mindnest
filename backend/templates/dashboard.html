@@ -76,7 +76,7 @@
 
     <nav class="navbar">
         <a href="http://127.0.0.1:5000/" class="nav-brand">MindNest</a>
-        <a href="/signup" class="nav-link-home">Back to Home</a>
+        <a href="http://127.0.0.1:5000/" class="nav-link-home">Back to Home</a>
     </nav>
 
     <div class="dashboard-container">
@@ -133,10 +133,14 @@
     </div>
 
 <script>
+    
     const userId = localStorage.getItem('user_id');
     let wellnessChart = null;
 
-    if (!userId) { window.location.href = "/signup"; }
+    // Check if user is logged in
+    if (!userId) { 
+        window.location.href = "/signup"; 
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
         const name = localStorage.getItem('first_name') || 'Bhumi';
@@ -150,38 +154,93 @@
         s.style.display = s.style.display === 'block' ? 'none' : 'block';
     }
 
+    // --- FIXED SUBMIT LOGIC ---
     async function submitCheckin() {
-        // ... (Your existing fetch logic for checkin)
-        const badge = document.getElementById('statusBadge');
-        badge.innerText = "Check-in Complete!";
-        badge.style.background = "#4f7f6a";
-        badge.style.color = "white";
-        toggleCheckin();
-        loadHistory();
+        const mood = document.getElementById('mood').value;
+        const stress = document.getElementById('stress').value;
+        const energy = 3; // Default energy if not in your current form
+
+        try {
+            const response = await fetch('/api/checkin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    user_id: userId, 
+                    mood: mood, 
+                    energy: energy, 
+                    stress: stress 
+                })
+            });
+
+            if (response.ok) {
+                // Update Badge UI
+                const badge = document.getElementById('statusBadge');
+                badge.innerText = "Check-in Complete!";
+                badge.style.background = "#4f7f6a";
+                badge.style.color = "white";
+                
+                // Close form and refresh data
+                toggleCheckin();
+                loadHistory(); 
+                alert("Progress saved successfully!");
+            } else {
+                alert("Failed to save. Please try again.");
+            }
+        } catch (err) { 
+            console.error("Error saving:", err);
+            alert("Connection error. Is the server running?");
+        }
     }
 
     async function loadHistory() {
         try {
             const response = await fetch(`/api/history/${userId}`);
+            if (!response.ok) return;
+            
             const data = await response.json();
+            
+            // Refresh Chart
             updateChart(data);
+            
+            // Refresh Table
             const tbody = document.getElementById('historyTableBody');
             tbody.innerHTML = data.slice(0, 5).map(e => `
-                <tr><td>${new Date(e.date).toLocaleDateString()}</td><td>${e.mood}/5</td><td>${e.stress}/5</td></tr>
+                <tr>
+                    <td>${new Date(e.date).toLocaleDateString()}</td>
+                    <td>${e.mood}/5</td>
+                    <td>${e.stress}/5</td>
+                </tr>
             `).join('');
-        } catch (e) { console.log(e); }
+        } catch (e) { 
+            console.error("History loading error:", e); 
+        }
     }
 
     function updateChart(data) {
         const ctx = document.getElementById('wellnessTrendChart').getContext('2d');
         if (wellnessChart) wellnessChart.destroy();
+        
+        // Reverse data so oldest is left, newest is right
+        const sortedData = [...data].reverse();
+        
         wellnessChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: data.map(e => new Date(e.date).toLocaleDateString()).reverse(),
-                datasets: [{ label: 'Mood', data: data.map(e => e.mood).reverse(), borderColor: '#4f7f6a', tension: 0.4 }]
+                labels: sortedData.map(e => new Date(e.date).toLocaleDateString('en-US', {month:'short', day:'numeric'})),
+                datasets: [{ 
+                    label: 'Mood', 
+                    data: sortedData.map(e => e.mood), 
+                    borderColor: '#4f7f6a', 
+                    backgroundColor: 'rgba(79, 127, 106, 0.1)',
+                    fill: true,
+                    tension: 0.4 
+                }]
             },
-            options: { responsive: true, scales: { y: { min: 1, max: 5 } } }
+            options: { 
+                responsive: true, 
+                scales: { y: { min: 1, max: 5 } },
+                plugins: { legend: { display: false } }
+            }
         });
     }
 
@@ -190,7 +249,12 @@
         s.style.display = s.style.display === 'block' ? 'none' : 'block';
     }
 
-    function logout() { localStorage.clear(); window.location.href = "/signup"; }
+    function logout() { 
+        localStorage.clear(); 
+        window.location.href = "/signup"; 
+    }
+
+    
 </script>
 
 </body>
