@@ -1,5 +1,8 @@
 from flask import Flask, request, jsonify, render_template
 import sqlite3
+from flask import send_file # Add this to your existing flask imports
+from fpdf import FPDF
+import io
 
 app = Flask(__name__)
 
@@ -151,3 +154,55 @@ def delete_history(user_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
+@app.route('/api/download_pdf/<int:user_id>')
+def download_pdf(user_id):
+    # 1. Fetch data from SQLite
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    # Get user name
+    cursor.execute('SELECT name FROM users WHERE id = ?', (user_id,))
+    user_name = cursor.fetchone()[0]
+    # Get history
+    cursor.execute('SELECT date, mood, energy, stress FROM checkins WHERE user_id = ? ORDER BY date DESC', (user_id,))
+    rows = cursor.fetchall()
+    conn.close()
+
+    # 2. Create PDF Logic
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", 'B', 16)
+    
+    # Header
+    pdf.set_text_color(79, 127, 106) # Your MindNest Green
+    pdf.cell(0, 10, f"MindNest Wellness Report: {user_name}", ln=True, align='C')
+    pdf.ln(10)
+
+    # Table Header
+    pdf.set_font("Arial", 'B', 12)
+    pdf.set_fill_color(230, 240, 236)
+    pdf.cell(50, 10, " Date", border=1, fill=True)
+    pdf.cell(40, 10, " Mood", border=1, fill=True)
+    pdf.cell(40, 10, " Energy", border=1, fill=True)
+    pdf.cell(40, 10, " Stress", border=1, fill=True, ln=True)
+
+    # 3. Fill Table with Data
+    pdf.set_font("Arial", size=12)
+    pdf.set_text_color(0, 0, 0)
+    for row in rows:
+        # Format date string (taking just the YYYY-MM-DD part)
+        clean_date = row[0][:10]
+        pdf.cell(50, 10, f" {clean_date}", border=1)
+        pdf.cell(40, 10, f" {row[1]}/5", border=1)
+        pdf.cell(40, 10, f" {row[2]}/5", border=1)
+        pdf.cell(40, 10, f" {row[3]}/5", border=1, ln=True)
+
+    # 4. Stream file back to browser
+    # We use io.BytesIO so we don't have to save a physical file on your computer
+    pdf_output = pdf.output()
+    return send_file(
+        io.BytesIO(pdf_output),
+        mimetype='application/pdf',
+        as_attachment=True,
+        download_name=f"{user_name}_Wellness_Report.pdf"
+    )

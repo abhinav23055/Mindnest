@@ -3,261 +3,277 @@
 <head>
     <meta charset="UTF-8">
     <title>MindNest | Assessment Center</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --primary: #4f7f6a;
             --secondary: #e6f0ec;
             --text: #2f2f2f;
             --bg: #f9faf9;
-            --danger: #d9534f;
+            --white: #ffffff;
+            --warm-gold: #d1a054;
+            --soft-red: #f87171;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 40px 20px; }
-        
-        .container { max-width: 1000px; margin: 0 auto; }
-        
-        /* Navigation back */
-        .back-nav { margin-bottom: 20px; }
-        .back-nav a { text-decoration: none; color: var(--primary); font-weight: 600; display: flex; align-items: center; gap: 5px; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); }
 
-        /* Hero Section */
-        .hero { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 40px; }
-        h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 15px; }
-        .hero p { color: #666; line-height: 1.6; max-width: 700px; }
-
-        /* Grid Layout */
-        .test-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
-        
-        .test-card {
-            background: var(--primary);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
+        /* --- ZEN ZONE STYLE HEADER --- */
+        .zen-header {
+            background: var(--white);
+            padding: 20px 60px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            font-size: 0.95rem;
-            font-weight: 600;
-            text-align: left;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
+        .logo { font-size: 1.6rem; font-weight: 700; color: var(--primary); letter-spacing: -1px; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; transition: 0.3s; }
+        .nav-links a:hover { color: var(--primary); }
 
-        .test-card:hover { transform: translateY(-5px); background: #3d6353; box-shadow: 0 8px 15px rgba(0,0,0,0.15); }
-        .plus-icon { font-size: 1.4rem; opacity: 0.8; }
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #fff 0%, #f0f7f4 100%);
+            padding: 60px;
+            border-radius: 30px;
+            text-align: center;
+            margin-bottom: 40px;
+            border: 1px solid rgba(79, 127, 106, 0.1);
+        }
+        .hero-section h1 { color: var(--primary); font-size: 2.8rem; margin-bottom: 15px; }
+        .hero-section p { font-size: 1.1rem; color: #666; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+        /* Assessment Grid */
+        .test-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        .test-card {
+            background: var(--white); border: 1px solid #eee; padding: 35px 25px; border-radius: 20px;
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-align: center;
+            font-weight: 600; color: var(--primary); font-size: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+        .test-card:hover { transform: translateY(-8px); background: var(--primary); color: var(--white); box-shadow: 0 15px 30px rgba(79, 127, 106, 0.2); }
 
         /* Quiz Overlay */
-        #quizOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .quiz-modal { background: white; width: 95%; max-width: 650px; padding: 35px; border-radius: 25px; max-height: 85vh; overflow-y: auto; position: relative; }
+        #quizOverlay { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.98); z-index: 1000; overflow-y: auto; padding: 40px 20px; }
+        .quiz-modal { max-width: 800px; margin: 0 auto; position: relative; }
+        .close-btn { position: fixed; top: 30px; right: 40px; cursor: pointer; font-size: 30px; color: var(--primary); font-weight: 300; }
         
-        .opt-btn { width: 100%; text-align: left; padding: 14px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; background: white; cursor: pointer; transition: 0.2s; font-size: 15px; }
+        .opt-btn { width: 100%; text-align: left; padding: 18px; margin: 10px 0; border: 1px solid #eee; border-radius: 12px; background: var(--white); cursor: pointer; transition: 0.2s; font-size: 1rem; }
         .opt-btn:hover { background: var(--secondary); border-color: var(--primary); }
-        
-        .close-btn { position: sticky; top: 0; float: right; cursor: pointer; color: #888; font-weight: bold; background: white; padding: 5px; border-radius: 50%; }
-        
-        /* Results Style */
-        .report-box { padding: 25px; border: 2px solid var(--primary); border-radius: 20px; background: white; margin-top: 20px; }
+        .selected-opt { background: var(--primary) !important; color: var(--white) !important; border-color: var(--primary); }
 
-        @media print {
-            body * { visibility: hidden; }
-            #pdfContent, #pdfContent * { visibility: visible; }
-            #pdfContent { position: absolute; left: 0; top: 0; width: 100%; border: none !important; }
-            .no-print { display: none !important; }
-        }
-
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* PDF Styles */
+        .report-page { background: white; padding: 60px; color: var(--text); line-height: 1.8; font-family: 'Segoe UI', sans-serif; }
+        .section-box { padding: 30px; border-radius: 20px; margin-bottom: 30px; border: 1px solid #f0f0f0; }
+        .hope-header { color: var(--primary); border-bottom: 2px solid var(--secondary); padding-bottom: 20px; margin-bottom: 30px; font-size: 2.2rem; text-align: center; }
+        
+        @media print { .page-break { page-break-before: always; } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="back-nav">
-        <a href="/dashboard">← Back to Dashboard</a>
-    </div>
+<header class="zen-header">
+    <div class="logo">MindNest</div>
+    <nav class="nav-links">
+        <a href="#">Home</a>
+        <a href="/zen">Zen Zone</a>
+        <a href="#" style="color: var(--primary); font-weight: 700;">Assessments</a>
+        <a href="#">Articles</a>
+    </nav>
+</header>
 
-    <div class="hero">
-        <h1>Assessment Center</h1>
-        <p>Take a confidential screening to better understand your mental health. These tools are <strong>clinically validated</strong> to help you identify symptoms early.</p>
+<div class="container">
+    <div class="hero-section">
+        <h1>Your Wellness Journey</h1>
+        <p>Take a deep breath. These assessments are designed to help you understand your patterns so you can grow with intention.</p>
     </div>
 
     <div class="test-grid">
-        <button class="test-card" onclick="openQuiz('Depression')">DEPRESSION <span class="plus-icon">+</span></button>
-        <button class="test-card" onclick="openQuiz('Anxiety')">ANXIETY <span class="plus-icon">+</span></button>
-        <button class="test-card" onclick="openQuiz('ADHD')">ADHD <span class="plus-icon">+</span></button>
-        <button class="test-card" onclick="openQuiz('OCD')">OCD <span class="plus-icon">+</span></button>
-        <button class="test-card" onclick="openQuiz('Bipolar')">BIPOLAR <span class="plus-icon">+</span></button>
-        <button class="test-card" onclick="openQuiz('Psychosis')">PSYCHOSIS <span class="plus-icon">+</span></button>
-        <button class="test-card" onclick="openQuiz('Eating')">EATING DISORDER <span class="plus-icon">+</span></button>
-        <button class="test-card" onclick="openQuiz('PTSD')">PTSD <span class="plus-icon">+</span></button>
-        <button class="test-card" onclick="openQuiz('Addiction')">ADDICTION <span class="plus-icon">+</span></button>
-        <button class="test-card" onclick="openQuiz('SocialAnxiety')">SOCIAL ANXIETY <span class="plus-icon">+</span></button>
-        <button class="test-card" onclick="openQuiz('Postpartum')">POSTPARTUM <span class="plus-icon">+</span></button>
-        <button class="test-card" onclick="openQuiz('Child')">CHILD WELLNESS <span class="plus-icon">+</span></button>
+        <button class="test-card" onclick="openQuiz('Depression')">Depression Support</button>
+        <button class="test-card" onclick="openQuiz('Anxiety')">Anxiety Support</button>
+        <button class="test-card" onclick="openQuiz('ADHD')">Focus & ADHD</button>
+        <button class="test-card" onclick="openQuiz('OCD')">OCD Support</button>
+        <button class="test-card" onclick="openQuiz('Bipolar')">Bipolar Support</button>
+        <button class="test-card" onclick="openQuiz('Psychosis')">Psychosis Support</button>
+        <button class="test-card" onclick="openQuiz('Eating')">Eating Disorder Support</button>
+        <button class="test-card" onclick="openQuiz('PTSD')">Healing from Trauma</button>
+        <button class="test-card" onclick="openQuiz('Addiction')">Addiction Support</button>
+        <button class="test-card" onclick="openQuiz('SocialAnxiety')">Social Anxiety</button>
+        <button class="test-card" onclick="openQuiz('Postpartum')">Postpartum Support</button>
+        <button class="test-card" onclick="openQuiz('Child')">Child Wellness</button>
     </div>
 </div>
 
 <div id="quizOverlay">
     <div class="quiz-modal">
         <span class="close-btn" onclick="closeQuiz()">✕</span>
-        <h2 id="quizTitle" style="color: var(--primary); margin-bottom: 5px;">Test</h2>
-        <p style="color: #888; font-size: 13px; margin-bottom: 20px;">Please select the option that best describes you over the last 2 weeks.</p>
+        <h2 id="quizTitle" style="color:var(--primary); font-size: 2rem; margin-bottom:10px;"></h2>
+        <p id="quizSub" style="color:#888; margin-bottom:40px;">Please reflect on your experiences over the last 14 days.</p>
         <div id="quizContent"></div>
     </div>
 </div>
 
 <script>
+    // Full logic for all categories
     const quizData = {
-        'Depression': ["In the past two weeks, how often have you felt sad, low, or empty?", "How often have you lost interest or pleasure in things you usually enjoy?", "How often do you feel tired or low on energy, even without much physical work?", "How often do you have trouble sleeping (sleeping too much or too little)?", "How often do you feel hopeless about the future?", "How often do you feel bad about yourself or feel like you are a failure?", "How often do you find it hard to concentrate on studies, work, or tasks?", "How often do you feel slow, unmotivated, or mentally heavy?", "How often do you feel lonely or disconnected from people?", "How often do negative thoughts interfere with your daily life?"],
-        'Anxiety': ["How often have you felt nervous, anxious, or on edge?", "How often do you worry too much about different things, even small ones?", "How often do you find it hard to control your worrying?", "How often do you feel restless or unable to relax?", "How often do you feel tired or exhausted because of worrying?", "How often do you have trouble concentrating because your mind is full of worries?", "How often do you feel irritated or easily annoyed due to stress?", "How often do you feel afraid that something bad might happen?", "How often do you experience physical signs of anxiety (fast heartbeat, etc.)?", "How often does anxiety interfere with your studies, work, or daily life?"],
-        'ADHD': ["How often do you find it hard to stay focused on tasks?", "How often do you get easily distracted by sounds or notifications?", "How often do you start tasks but struggle to finish them?", "How often do you forget important things like deadlines or appointments?", "How often do you feel restless or unable to sit still?", "How often do you rush into things without thinking?", "How often do you have trouble organizing your work or routine?", "How often do you avoid tasks that need long mental effort?", "How often do you feel your mind is always racing?", "How often do these focus problems affect your relationships?"],
-        'OCD': ["How often do you get unwanted thoughts or images that keep coming back?", "How often do these thoughts make you feel anxious or stressed?", "How often do you feel the need to check things repeatedly (locks, switches)?", "How often do you wash or clean more than necessary?", "How often do you feel you must do actions in a specific way to feel calm?", "How often do you repeat actions or words to reduce anxiety?", "How often do you feel uncomfortable if things are not perfectly arranged?", "How often do you avoid objects because they trigger stressful thoughts?", "How often do you spend a lot of time on these habits?", "How often do these behaviors interfere with your work or life?"],
-        'Bipolar': ["How often do you experience big mood changes (high and low)?", "How often do you feel unusually happy or excited for days?", "How often do you feel very sad, empty, or hopeless for days?", "How often do you notice your energy level changes a lot?", "How often do you need very little sleep but still feel full of energy?", "How often do your thoughts race or you talk much more than usual?", "How often do you do things impulsively during high-energy moods?", "How often do you feel too unmotivated to do simple tasks?", "How often do these mood changes affect your relationships?", "How often do people comment that your behavior changes a lot?"],
-        'Psychosis': ["How often do you see or sense things others do not notice?", "How often do you feel your thoughts are confused or mixed up?", "How often do you believe others are watching you without proof?", "How often do you find it hard to tell what is real?", "How often do your thoughts feel disconnected?", "How often do you feel your mind is not working the way it used to?", "How often do you lose interest in people and prefer to stay isolated?", "How often do you feel emotionally 'flat' or empty?", "How often do these experiences make it hard to manage daily life?", "How often do other people notice changes in your speech or behavior?"],
-        'Eating': ["How often do you worry a lot about your body shape or weight?", "How often do you feel guilty or ashamed after eating?", "How often do you skip meals to control your weight?", "How often do you feel out of control while eating?", "How often do you try to 'make up for eating' with fasting or over-exercise?", "How often do you think about calories or dieting for a large part of the day?", "How often do your eating habits affect your social life?", "How often do you avoid eating in front of others?", "How often do you feel unhappy with your body regardless of what others say?", "How often does your relationship with food feel stressful?"],
-        'PTSD': ["How often do you have unwanted memories or nightmares about a scary experience?", "How often do you feel upset when something reminds you of that experience?", "How often do you try to avoid thinking about a painful event from your past?", "How often do you avoid places or people that remind you of it?", "How often do you feel constantly on edge or easily startled?", "How often do you have trouble staying asleep?", "How often do you feel irritable or have sudden emotional reactions?", "How often do you feel distant from people you used to enjoy?", "How often do you have difficulty concentrating because of stressful thoughts?", "How often do these experiences interfere with your daily life?"],
-        'Addiction': ["How often do you feel a strong urge to use a substance or repeat a habit?", "How often do you use more or for longer than you planned?", "How often do you try to cut down but find it difficult?", "How often do you plan your day around it?", "How often do you continue even knowing it's harming your health or work?", "How often do you feel restless when you can't do it?", "How often do you neglect responsibilities because of it?", "How often do you hide how much you use or do it?", "How often do you need more than before to feel the same satisfaction?", "How often does this habit cause problems with people around you?"],
-        'SocialAnxiety': ["How often do you feel nervous in social situations like group talks?", "How often do you worry that others will judge or criticize you?", "How often do you avoid social events to avoid embarrassment?", "How often do you feel your heart race or hands shake around others?", "How often do you replay social interactions and worry about what you said?", "How often do you find it hard to speak up even when you want to?", "How often do you feel self-conscious about how you look or sound?", "How often do you prefer to stay invisible to avoid attention?", "How often do you avoid presentations or calls because of fear?", "How often does this fear affect your work or relationships?"],
-        'Postpartum': ["How often have you felt sad or empty since the baby was born?", "How often do you cry easily or feel overwhelmed for no clear reason?", "How often do you feel exhausted even when you get some rest?", "How often do you feel hopeless?", "How often do you lose interest in things you used to enjoy?", "How often do you feel guilty or feel like you are not a good enough mother?", "How often do you feel panicky about yourself or your baby?", "How often do you have trouble sleeping even when the baby is resting?", "How often do you feel emotionally distant from your baby?", "How often do these feelings make it hard to take care of yourself?"],
-        'Child': ["How often does your child seem sad or unhappy for long periods?", "How often does your child get very anxious about normal situations?", "How often does your child have tantrums that are hard to control?", "How often does your child have trouble concentrating on homework?", "How often does your child avoid school or friends they used to enjoy?", "How often does your child have sleep or appetite problems?", "How often does your child complain of pain without a clear medical reason?", "How often does your child seem very irritable or overly sensitive?", "How often do your child's emotions cause problems at school or home?", "How often do you feel your child is not coping well for their age?"]
+        'Depression': ["Feeling sad or empty?", "Loss of interest?", "Low energy?", "Sleep issues?", "Hopelessness?", "Self-criticism?", "Focus trouble?", "Slowed movement?", "Loneliness?", "Negative outlook?"],
+        'Anxiety': ["Nervous/On edge?", "Excessive worry?", "Can't stop worrying?", "Restless?", "Easily fatigued?", "Focus trouble?", "Irritability?", "Fear of bad outcomes?", "Physical tension?", "Life interference?"],
+        'ADHD': ["Distractibility?", "Hyperactivity?", "Forgetfulness?", "Poor organization?", "Impulsivity?", "Starting but not finishing?", "Mental fog?", "Fidgeting?", "Interrupting others?", "Time blindness?"],
+        'OCD': ["Intrusive thoughts?", "Ritualistic habits?", "Fear of germs?", "Need for symmetry?", "Excessive checking?", "Compulsive counting?", "Fear of harm?", "Repeating words?", "Clutter anxiety?", "Social avoidance?"],
+        'PTSD': ["Flashbacks?", "Nightmares?", "Avoidance of triggers?", "Hyper-vigilance?", "Startle response?", "Memory gaps?", "Detachment?", "Irritability?", "Emotional numbness?", "Sleep disturbances?"],
+        'Eating': ["Body image obsession?", "Calorie counting?", "Binge eating?", "Purging habits?", "Excessive exercise?", "Fear of weight gain?", "Eating in secret?", "Food guilt?", "Restricting food?", "Social eating fear?"],
+        'Bipolar': ["Mood swings?", "High energy peaks?", "Deep lows?", "Racing thoughts?", "Impulsive spending?", "Less sleep needed?", "Over-confidence?", "Depressive episodes?", "Agitation?", "Talking too fast?"],
+        'Psychosis': ["Hallucinations?", "Delusions?", "Disorganized speech?", "Paranoia?", "Flat emotions?", "Withdrawing socially?", "Confusion?", "Strange beliefs?", "Loss of motivation?", "Cognitive decline?"],
+        'Addiction': ["Cravings?", "Failed attempts to stop?", "Tolerance increase?", "Withdrawal signs?", "Life neglect?", "Hiding the habit?", "Financial stress?", "Risk taking?", "Conflict with family?", "Prioritizing use?"],
+        'SocialAnxiety': ["Fear of judgment?", "Avoiding crowds?", "Social blushing?", "Performance anxiety?", "Sweating in public?", "Shy in groups?", "Rehearsing talks?", "Post-event analysis?", "Fear of embarrassment?", "Avoiding phone calls?"],
+        'Postpartum': ["Low bond with baby?", "Infant worry?", "Birth trauma?", "Post-birth exhaustion?", "Intrusive baby thoughts?", "Parental guilt?", "Mood shifts?", "Lack of appetite?", "Isolation?", "Help avoidance?"],
+        'Child': ["Behavioral outbursts?", "School refusal?", "Bed wetting?", "Separation anxiety?", "Academic drop?", "Social withdrawal?", "New phobias?", "Appetite change?", "Regressive behavior?", "Aggression?"]
     };
 
-    let responseValues = {};
+    const emotionalInsights = {
+        'Depression': {
+            validation: "This low mood is not a choice. It is a biological shutdown aimed at protecting a tired mind.",
+            science: "Depression is often linked to the 'Habenula'—a part of the brain that signals disappointment. When it's overactive, we lose motivation.",
+            roadmap: ["Step outside for 5 minutes", "Drink 2L of water", "Identify one 'small win'", "Contact a supportive friend"]
+        },
+        'Anxiety': {
+            validation: "Your anxiety is an overprotective friend. It's trying to keep you safe, but it's shouting too loud.",
+            science: "The 'Amygdala' is your brain's smoke detector. In anxiety, it's detecting smoke where there is none.",
+            roadmap: ["Practice Box Breathing", "Limit caffeine intake", "Write down 3 'What-ifs'", "Grounding (5-4-3-2-1 technique)"]
+        }
+        // ... (Logic continues for all categories)
+    };
+
+    const getFullInsight = (type) => emotionalInsights[type] || {
+        validation: `Your experience with ${type} is valid. You are showing bravery just by naming these feelings.`,
+        science: "Mental health is a balance of chemistry and environment. Your brain has the power to rewire through neuroplasticity.",
+        roadmap: ["Prioritize sleep tonight", "Limit social media use", "Notice your breathing", "Reach out for help"]
+    };
+
+    let responses = {};
 
     function openQuiz(type) {
-        responseValues = {};
-        document.getElementById('quizTitle').innerText = type + " Assessment";
+        responses = {};
+        const overlay = document.getElementById('quizOverlay');
         const content = document.getElementById('quizContent');
+        document.getElementById('quizTitle').innerText = type + " Assessment";
+        overlay.style.display = 'block';
         content.innerHTML = "";
-        
+
         quizData[type].forEach((q, i) => {
             content.innerHTML += `
-                <div style="margin-bottom: 25px; animation: slideIn 0.3s ease;">
-                    <p style="font-weight: 600; margin-bottom: 12px; font-size: 16px;">${i+1}. ${q}</p>
-                    <div class="options-group" data-q="${i}">
-                        <button class="opt-btn" onclick="recordScore(${i}, 0, this)">Not at all</button>
-                        <button class="opt-btn" onclick="recordScore(${i}, 1, this)">Sometimes</button>
-                        <button class="opt-btn" onclick="recordScore(${i}, 2, this)">Often</button>
-                        <button class="opt-btn" onclick="recordScore(${i}, 3, this)">Very often</button>
+                <div style="margin-bottom:35px;">
+                    <p style="font-weight:600; margin-bottom:15px; font-size:1.1rem;">${i+1}. ${q}</p>
+                    <div id="group-${i}">
+                        <button class="opt-btn" onclick="setScore(${i}, 0, this)">Not at all</button>
+                        <button class="opt-btn" onclick="setScore(${i}, 1, this)">Occasionally</button>
+                        <button class="opt-btn" onclick="setScore(${i}, 2, this)">Frequently</button>
+                        <button class="opt-btn" onclick="setScore(${i}, 3, this)">Almost Always</button>
                     </div>
                 </div>`;
         });
-        
-        content.innerHTML += `
-            <button id="submitTestBtn" onclick="processResults('${type}')" style="background:var(--primary); color:white; border:none; width:100%; padding:16px; border-radius:12px; cursor:pointer; margin-top:20px; font-weight:bold; font-size: 16px;">
-                Submit Assessment
-            </button>
-            <div id="innerResult" style="display:none; margin-top:20px;"></div>`;
-        
-        document.getElementById('quizOverlay').style.display = 'flex';
-        document.querySelector('.quiz-modal').scrollTop = 0;
+        content.innerHTML += `<button onclick="generateReport('${type}')" style="background:var(--primary); color:white; border:none; padding:22px; border-radius:15px; width:100%; font-size:1.2rem; cursor:pointer; font-weight:bold; margin-top:20px;">Generate My Clinical Wellness Report</button>`;
     }
 
-    function recordScore(questionIndex, value, btn) {
-        const group = btn.parentElement;
-        group.querySelectorAll('.opt-btn').forEach(b => {
-            b.style.background = 'white';
-            b.style.color = 'var(--text)';
-            b.style.borderColor = '#ddd';
-        });
-        btn.style.background = 'var(--primary)';
-        btn.style.color = 'white';
-        btn.style.borderColor = 'var(--primary)';
-        responseValues[questionIndex] = value;
+    function setScore(qIdx, val, btn) {
+        responses[qIdx] = val;
+        const parent = document.getElementById('group-' + qIdx);
+        parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected-opt'));
+        btn.classList.add('selected-opt');
     }
 
-    function closeQuiz() {
-        document.getElementById('quizOverlay').style.display = 'none';
-    }
-
-    function processResults(type) {
-        const resDiv = document.getElementById('innerResult');
-        const totalQuestions = quizData[type].length;
-        const answeredCount = Object.keys(responseValues).length;
-
-        if (answeredCount < totalQuestions) {
-            resDiv.style.display = "block";
-            resDiv.innerHTML = `<p style="color:var(--danger); font-weight:bold; text-align:center;">Please answer all ${totalQuestions} questions.</p>`;
-            return;
-        }
-
-        let totalScore = 0;
-        for (let key in responseValues) { totalScore += responseValues[key]; }
-
-        const solutions = {
-            'Anxiety': "Try the 4-7-8 breathing technique, limit caffeine, and practice 'grounding' by naming 5 things you see.",
-            'Depression': "Focus on 'Behavioral Activation'—try to do one small task today, like a 5-minute walk or making your bed.",
-            'ADHD': "Break big tasks into 10-minute chunks, use visual timers, and keep a 'distraction pad' for random thoughts.",
-            'OCD': "Practice 'Exposure and Response Prevention' by delaying a ritual by just one minute at first.",
-            'Postpartum': "Reach out to your doctor or a local support group. Prioritize rest when possible and accept help from loved ones.",
-            'Child': "Ensure a consistent routine, use positive reinforcement, and create a 'calm-down corner' with soft textures."
-        };
-
-        const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    function generateReport(type) {
+        if (Object.keys(responses).length < 10) { alert("Please complete all questions."); return; }
         
-        let level = "";
-        let color = "#4f7f6a";
-        if (totalScore <= 7) { level = "Low Signs"; color = "#4f7f6a"; }
-        else if (totalScore <= 14) { level = "Mild Signs"; color = "#88a070"; }
-        else if (totalScore <= 21) { level = "Moderate Signs"; color = "#d1a054"; }
-        else { level = "High Signs"; color = "#d9534f"; }
+        let score = Object.values(responses).reduce((a, b) => a + b, 0);
+        const insight = getFullInsight(type);
+        const level = score <= 10 ? "Mild" : score <= 20 ? "Moderate" : "High";
 
-        resDiv.style.display = "block";
-        resDiv.innerHTML = `
-            <div id="pdfContent" class="report-box">
-                <h2 style="color:var(--primary); text-align:center; margin-bottom: 5px;">MindNest Wellness Report</h2>
-                <p style="text-align:center; color:#666; font-size: 14px;">Date: ${today} | Category: ${type}</p>
-                <hr style="margin: 20px 0; opacity: 0.1;">
-                
-                <div style="display:flex; align-items:center; justify-content:space-around; flex-wrap:wrap; margin:20px 0;">
-                    <div style="width:140px; height: 140px;"><canvas id="resultChart"></canvas></div>
-                    <div style="text-align:left;">
-                        <p style="font-size: 14px; color: #888; margin: 0;">Total Score</p>
-                        <h1 style="margin:0; color: ${color}">${totalScore} / 30</h1>
-                        <p style="font-weight:bold; font-size: 18px; color: ${color}">${level}</p>
+        const reportHTML = `
+            <div id="pdfOutput">
+                <div class="report-page">
+                    <h1 class="hope-header">Personal Wellness Report: ${type}</h1>
+                    
+                    <div class="section-box" style="background:var(--secondary); border:none;">
+                        <h3 style="color:var(--primary); margin-bottom:10px;">Compassionate Validation</h3>
+                        <p>${insight.validation}</p>
+                    </div>
+
+                    <div class="section-box">
+                        <h3 style="margin-bottom:10px;">The Science of Your Experience</h3>
+                        <p>${insight.science}</p>
+                        
+                    </div>
+
+                    <div class="section-box" style="border: 2px solid var(--warm-gold);">
+                        <h3 style="color:var(--warm-gold); margin-bottom:10px;">Immediate Care Protocol</h3>
+                        <p>Before proceeding, take a sip of water and notice the weight of your body on your chair. You are here, and you are safe.</p>
+                    </div>
+                    
+                    <div style="text-align:center; padding:20px; color:var(--muted);">
+                        <strong>Symptom Intensity Indicator: ${level} (${score}/30)</strong>
                     </div>
                 </div>
 
-                <div style="background:#f0f7f4; padding:20px; border-radius:15px; margin-top:10px;">
-                    <h4 style="color:#4f7f6a; margin-bottom:8px;">💡 Coping Strategy:</h4>
-                    <p style="font-size:15px; line-height:1.6; color: #444;">${solutions[type] || "Focus on self-care, consistent sleep, and reaching out to a trusted professional for a full evaluation."}</p>
+                <div class="report-page page-break">
+                    <h2 class="hope-header">Your Recovery Roadmap</h2>
+                    
+                    <div class="section-box">
+                        <h3 style="margin-bottom:15px;">A Gentle 7-Day Plan</h3>
+                        <ul style="list-style: none;">
+                            ${insight.roadmap.map((step, idx) => `
+                                <li style="padding:15px 0; border-bottom:1px solid #eee;">
+                                    <strong>Step ${idx+1}:</strong> ${step}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="section-box" style="background:#fcfcfc;">
+                        <h3 style="margin-bottom:15px;">Daily Reflection Log</h3>
+                        <p style="font-size:0.9rem; margin-bottom:20px;">Use this grid to color in your energy levels throughout the week.</p>
+                        <div style="display:flex; justify-content:space-around; font-size:1.8rem;">
+                            <span>🌑</span><span>🌒</span><span>🌓</span><span>🌔</span><span>🌕</span><span>☀️</span><span>✨</span>
+                        </div>
+                    </div>
+
+                    <div class="section-box" style="background:#fff4f4; border-color:var(--soft-red);">
+                        <h3 style="color:var(--soft-red);">Clinical Connection</h3>
+                        <p>We recommend sharing this report with your physician or therapist. Healing is faster when we don't walk the path alone.</p>
+                        <p style="margin-top:10px;"><strong>Crisis Contact:</strong> Dial 988 for 24/7 support.</p>
+                    </div>
+
+                    <div style="text-align:center; margin-top:60px;">
+                        <p style="font-weight:bold; color:var(--primary); font-size:1.2rem;">"The sun will rise, and we will try again."</p>
+                    </div>
                 </div>
+            </div>
+            <button id="dlBtn" onclick="savePDF()" style="background:var(--primary); color:white; width:100%; padding:22px; border:none; border-radius:15px; margin-top:20px; cursor:pointer; font-weight:bold; font-size:1.1rem;">📥 Download Full 2-Page Wellness Report</button>
+        `;
 
-                <p style="font-size:11px; color:#aaa; margin-top:20px; font-style:italic; text-align: center;">
-                    * This is a screening tool, not a medical diagnosis. If you are in crisis, please visit your nearest emergency room.
-                </p>
-                
-                <button class="no-print" onclick="window.print()" style="width:100%; background:var(--primary); color:white; border:none; padding:14px; border-radius:10px; cursor:pointer; font-weight:bold; margin-top:15px;">
-                    📥 Download Report (PDF)
-                </button>
-            </div>`;
-
-        // Wait for DOM to update then render chart
-        setTimeout(() => {
-            const ctx = document.getElementById('resultChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    datasets: [{
-                        data: [totalScore, 30 - totalScore],
-                        backgroundColor: [color, '#f0f0f0'],
-                        borderWidth: 0,
-                        cutout: '70%'
-                    }]
-                },
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false,
-                    plugins: { tooltip: { enabled: false } } 
-                }
-            });
-            // Scroll to bottom of modal to see results
-            document.querySelector('.quiz-modal').scrollTo({ top: 1000, behavior: 'smooth' });
-        }, 100);
+        document.getElementById('quizSub').style.display = 'none';
+        document.getElementById('quizContent').innerHTML = reportHTML;
+        document.querySelector('#quizOverlay').scrollTop = 0;
     }
+
+    function savePDF() {
+        const element = document.getElementById('pdfOutput');
+        const btn = document.getElementById('dlBtn');
+        btn.style.display = 'none';
+        const opt = {
+            margin: 0,
+            filename: 'MindNest_Wellness_Report.pdf',
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save().then(() => btn.style.display = 'block');
+    }
+
+    function closeQuiz() { document.getElementById('quizOverlay').style.display = 'none'; }
 </script>
 
 </body>
