@@ -105,6 +105,10 @@ def login():
         
     return jsonify({"error": "Invalid email or password"}), 401
 
+@app.route('/welcome')
+def welcome():
+    return render_template('welcome.html')
+
 @app.route('/api/checkin', methods=['POST'])
 def checkin():
     data = request.json

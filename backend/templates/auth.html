@@ -459,7 +459,7 @@
         if (response.ok) {
           localStorage.setItem('user_id', result.user_id);
           localStorage.setItem('first_name', result.first_name);
-          window.location.href = "/dashboard";
+          window.location.href = "/welcome";
         } else {
           alert(result.error || "Login failed");
         }
