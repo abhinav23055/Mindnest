@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <title>MindNest | Mental State Scanner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mental-state-detector.css') }}">
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+
+    <!-- NAV — exactly like index.html -->
+    <nav>
+        <a href="/" class="logo">MindNest</a>
+        <div class="nav-buttons">
+            <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Mode</button>
+            <a href="/articles" class="nav-link">Insights</a>
+            <a href="/dashboard" class="nav-link">Dashboard</a>
+            <a href="/zen" class="nav-link">Zen Zone</a>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- PAGE LABEL — exactly like index.html -->
+    <div class="page-label-strip">
+        <div class="pl-dot" style="background:#3a5a40;"></div>
+        <div class="pl-breadcrumb">
+            <a href="/" class="pl-home">Home</a>
+            <span class="pl-sep">›</span>
+            <span class="pl-current">🧠 Mental State Scanner</span>
+        </div>
+    </div>
+
+    <!-- HERO — exactly like index.html -->
+    <header class="hero">
+        <div class="badge-premium">🧠 AI-Powered Emotional Analysis</div>
+        <h1 id="userName">Mental State<br /><span>Scanner</span></h1>
+        <p style="color: var(--text-muted); font-size: 1.1rem; margin-top: 20px;">
+            Real-time facial expression and voice analysis to understand your current emotional state.
+        </p>
+        <div class="quote-box">
+            <p>"Your face and your voice tell a story your words alone cannot. Awareness is the first step."</p>
+        </div>
+    </header>
+
+    <!-- FEATURES GRID — same class as index.html -->
+    <section class="features-grid">
+
+        <!-- CAMERA CARD -->
+        <div class="feature-card" style="cursor:default;">
+            <div class="icon-circle">📷</div>
+            <h3>Facial Analysis</h3>
+            <div class="video-wrapper">
+                <video id="video" autoplay muted playsinline></video>
+                <canvas id="overlay"></canvas>
+                <div class="scan-line" id="scanLine"></div>
+                <div class="video-placeholder" id="placeholder">
+                    <span class="icon">📷</span>
+                    <span>Camera not started</span>
+                    <span style="opacity:0.6; font-size:0.75rem;">Click "Start Camera" below</span>
+                </div>
+            </div>
+            <div class="loading-bar" id="loadingBar">
+                <div class="loading-track"><div class="loading-fill" id="loadingFill"></div></div>
+                <div class="loading-text" id="loadingText">Loading AI models...</div>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-go" id="startBtn" onclick="startCamera()">Start Camera</button>
+                <button class="btn btn-stop" id="stopBtn" onclick="stopCamera()" disabled>Stop</button>
+            </div>
+            <div class="status-bar">
+                <div class="status-dot" id="camDot"></div>
+                <span id="camStatus">Camera off</span>
+            </div>
+        </div>
+
+        <!-- EMOTION CARD -->
+        <div class="feature-card" style="cursor:default;">
+            <div class="icon-circle">😊</div>
+            <h3>Detected Emotion</h3>
+            <div class="emotion-big">
+                <span class="emotion-emoji" id="emotionEmoji">😶</span>
+                <div class="emotion-name" id="emotionName" style="color:var(--text-muted)">Waiting...</div>
+                <div class="emotion-desc" id="emotionDesc">Start the camera to begin facial analysis.</div>
+            </div>
+            <div id="barsSection"></div>
+        </div>
+
+        <!-- VOICE CARD — full width -->
+        <div class="feature-card full">
+            <div class="icon-circle">🎤</div>
+            <h3>Voice & Speech Analysis</h3>
+            <div class="voice-inner" style="margin-top:20px;">
+                <div>
+                    <div class="sub-label">Transcript</div>
+                    <div class="voice-area">
+                        <span class="placeholder-text" id="transcriptText">Start speaking after clicking "Start Listening"...</span>
+                    </div>
+                    <div class="btn-row">
+                        <button class="btn btn-go" id="micBtn" onclick="toggleMic()">🎤 Start Listening</button>
+                        <button class="btn btn-outline" onclick="clearTranscript()">Clear</button>
+                    </div>
+                </div>
+                <div>
+                    <div class="sub-label">Speech Sentiment</div>
+                    <div class="voice-sentiment" id="sentimentDisplay">
+                        <div class="sentiment-dot"></div>
+                        <span>No speech detected yet</span>
+                    </div>
+                    <div style="margin-top:16px;">
+                        <div class="sub-label">Emotional Keywords</div>
+                        <div id="keywordEmotions" style="font-size:0.82rem; color:var(--text-muted); line-height:2;">
+                            Emotional keywords from your speech will appear here.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="status-bar">
+                <div class="status-dot" id="micDot"></div>
+                <span id="micStatus">Microphone off</span>
+            </div>
+        </div>
+
+        <!-- COMBINED STATE + SAVE — full width -->
+        <div class="feature-card full">
+            <div class="icon-circle">🔍</div>
+            <h3>Combined Mental State</h3>
+            <div class="state-display" id="stateDisplay">
+                <div class="state-icon">🔍</div>
+                <div>
+                    <div class="state-title" id="stateTitle">Awaiting Data</div>
+                    <div class="state-sub" id="stateSub">Start both camera and microphone to get a combined mental state analysis.</div>
+                </div>
+            </div>
+            <!-- SAVE TO DASHBOARD -->
+            <div class="save-section">
+                <div class="sub-label">💾 Save This Scan to Your Dashboard</div>
+                <div class="save-row">
+                    <select class="save-select" id="moodSelect">
+                        <option value="" disabled selected>Rate your mood (1–5)</option>
+                        <option value="1">1 — Very Low</option>
+                        <option value="2">2 — Low</option>
+                        <option value="3">3 — Neutral</option>
+                        <option value="4">4 — Good</option>
+                        <option value="5">5 — Great</option>
+                    </select>
+                    <select class="save-select" id="stressSelect">
+                        <option value="" disabled selected>Rate your stress (1–5)</option>
+                        <option value="1">1 — Very Low</option>
+                        <option value="2">2 — Low</option>
+                        <option value="3">3 — Moderate</option>
+                        <option value="4">4 — High</option>
+                        <option value="5">5 — Very High</option>
+                    </select>
+                    <button class="btn btn-go" onclick="saveScan()">Save ✓</button>
+                </div>
+                <div class="save-badge" id="saveBadge">✅ Saved to your dashboard!</div>
+            </div>
+        </div>
+
+        <!-- HISTORY + CHART — full width -->
+        <div class="feature-card full">
+            <div class="icon-circle">📊</div>
+            <h3>Your Wellness History</h3>
+            <div class="voice-inner" style="margin-top:20px;">
+                <div>
+                    <div class="sub-label">Recent Check-ins</div>
+                    <table class="history-table">
+                        <thead><tr><th>Date</th><th>Mood</th><th>Stress</th></tr></thead>
+                        <tbody id="historyTableBody">
+                            <tr><td colspan="3" class="history-empty">Loading history...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <div class="sub-label">Mood Trend</div>
+                    <div class="chart-wrapper">
+                        <canvas id="wellnessTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABOUT-STYLE CARD — privacy notice, full width like the about card -->
+        <div class="feature-card about-card" style="cursor:default;">
+            <div class="about-left">
+                <div class="icon-circle" style="flex-shrink:0;">🔒</div>
+                <div class="about-text">
+                    <h3>Privacy Notice</h3>
+                    <p>All camera and microphone processing happens entirely in your browser — nothing is recorded or sent to any server. Only the mood/stress ratings you choose to save are stored, linked to your account. This tool is for <strong>educational purposes only</strong> and is not a medical or clinical diagnosis tool.</p>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- FOOTER CTA — exactly like index.html -->
+    <section class="footer-cta">
+        <h2 style="font-size: 2.2rem; letter-spacing: -1.5px; color: var(--primary); margin-bottom: 15px;">Understanding yourself is the first step.</h2>
+        <p style="margin-bottom: 30px; color: var(--text-muted);">This scanner is part of MindNest's emotional awareness toolkit.</p>
+        <a href="/dashboard" class="btn-premium">← Back to Dashboard</a>
+    </section>
+
+    <footer style="padding: 60px 10%; font-size: 0.75rem; color: #aaa; text-align: center;">
+        <p>&copy; 2026 MindNest. A BCA Capstone Project.</p>
+    </footer>
+
+<script src="/static/js/mental-state-detector.js"></script>
+</body>
+</html>

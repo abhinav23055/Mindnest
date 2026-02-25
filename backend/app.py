@@ -105,6 +105,10 @@ def login():
         
     return jsonify({"error": "Invalid email or password"}), 401
 
+@app.route('/mental-state')
+def mental_state():
+    return render_template('mental-state-detector.html')
+
 @app.route('/welcome')
 def welcome():
     return render_template('welcome.html')
