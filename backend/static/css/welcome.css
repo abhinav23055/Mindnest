@@ -1,0 +1,135 @@
+        :root {
+            --primary: #3a5a40; 
+            --accent: #a3b18a;
+            --bg-base: #fdfdfd;
+            --text-main: #344e41;
+            --text-muted: #588157;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.7);
+            --section-bg: #f4f6f4;
+        }
+
+        [data-theme="dark"] {
+            --primary: #a3b18a;
+            --accent: #3a5a40;
+            --bg-base: #1a1a1a;
+            --text-main: #f1f4f1;
+            --text-muted: #a3b18a;
+            --white: #242424;
+            --glass: rgba(36, 36, 36, 0.8);
+            --section-bg: #2d2d2d;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: background 0.4s ease, color 0.4s ease; }
+        body { background: var(--bg-base); color: var(--text-main); line-height: 1.7; -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* NAV MATCHING INDEX */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 10%;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo { font-weight: 800; font-size: 1.3rem; letter-spacing: -1.5px; color: var(--primary); text-decoration: none; }
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--accent);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        /* WELCOME SECTION */
+        .welcome-hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 10%;
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeUp 1s ease-out;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .welcome-hero h1 { 
+            font-size: clamp(2.2rem, 5vw, 3.5rem); 
+            font-weight: 800; 
+            color: var(--primary); 
+            line-height: 1.2; 
+            letter-spacing: -2px; 
+            margin-bottom: 20px;
+        }
+
+        .welcome-hero p {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+
+        /* BREATHE DOT ANIMATION FROM INDEX */
+        .zen-dot {
+            width: 15px; height: 15px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto 30px;
+            animation: breathe 4s infinite ease-in-out;
+        }
+        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(2.5); opacity: 1; } }
+
+        .btn-premium {
+            background: var(--primary);
+            color: var(--white);
+            padding: 16px 40px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 700;
+            box-shadow: 0 10px 20px rgba(58, 90, 64, 0.15);
+            transition: 0.3s;
+        }
+
+        .btn-premium:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(58, 90, 64, 0.25); }
+
+        .quick-links {
+            margin-top: 50px;
+            display: flex;
+            gap: 25px;
+        }
+
+        .q-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
+            transition: 0.2s;
+        }
+
+        .q-link:hover { opacity: 1; color: var(--primary); }
+
+        footer { padding: 40px 10%; font-size: 0.75rem; color: #aaa; text-align: center; }
+
+        @media (max-width: 600px) {
+            .quick-links { flex-direction: column; gap: 15px; }
+        }
