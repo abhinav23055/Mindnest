@@ -1,200 +1,513 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resources | MindNest</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #3a5a40; 
-            --accent: #a3b18a;
-            --bg-base: #f0f2ef; 
-            --text-main: #2d3e33;
-            --text-muted: #588157;
-            --white: #f8faf8; 
-            --glass: rgba(240, 242, 239, 0.85);
-            --section-bg: #e4e9e3;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resources | MindNest</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #3a5a40;
+      --accent: #a3b18a;
+      --bg-base: #fdfdfd;
+      --text-main: #344e41;
+      --text-muted: #588157;
+      --white: #ffffff;
+      --glass: rgba(255, 255, 255, 0.7);
+      --section-bg: #f4f6f4;
+    }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg-base); color: var(--text-main); line-height: 1.7; -webkit-font-smoothing: antialiased; padding-bottom: 80px; }
+    [data-theme="dark"] {
+      --primary: #a3b18a;
+      --accent: #3a5a40;
+      --bg-base: #1a1a1a;
+      --text-main: #f1f4f1;
+      --text-muted: #a3b18a;
+      --white: #242424;
+      --glass: rgba(36, 36, 36, 0.8);
+      --section-bg: #2d2d2d;
+    }
 
-        nav {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 18px 10%; background: var(--glass); backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000;
-        }
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
 
-        .logo { font-weight: 800; font-size: 1.3rem; letter-spacing: -1.5px; color: var(--primary); text-decoration: none; }
-        .back-link { text-decoration: none; color: var(--text-muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; }
+    body {
+      background: var(--bg-base);
+      color: var(--text-main);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
 
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 5%; }
-        
-        .hero { text-align: center; padding: 60px 0 40px; }
-        .badge { background: var(--section-bg); color: var(--text-muted); padding: 6px 16px; border-radius: 100px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; display: inline-block; }
-        h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; color: var(--primary); letter-spacing: -2px; margin-bottom: 15px; }
-        .hero p { color: var(--text-muted); font-size: 1.1rem; max-width: 700px; margin: 0 auto; }
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 10%;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.03);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
 
-        .category-section { margin-bottom: 50px; }
-        h2 { font-size: 1.4rem; color: var(--primary); letter-spacing: -1px; margin-bottom: 25px; display: flex; align-items: center; gap: 15px; }
-        h2::after { content: ""; height: 1px; background: var(--accent); flex: 1; opacity: 0.3; }
+    .logo { font-weight: 800; font-size: 1.3rem; letter-spacing: -1.5px; color: var(--primary); text-decoration: none; }
+    .nav-buttons { display: flex; gap: 30px; align-items: center; }
+    .nav-link { text-decoration: none; color: var(--text-main); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; cursor: pointer; }
 
-        .resource-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .resource-card {
-            background: var(--white); padding: 30px; border-radius: 24px; border: 1px solid rgba(0,0,0,0.03);
-            text-decoration: none; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); display: flex; flex-direction: column;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-        }
-        .resource-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 15px 30px rgba(58, 90, 64, 0.08); }
-        .resource-card h3 { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
-        .resource-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--accent);
+      color: var(--primary);
+      padding: 6px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
 
-        @media (max-width: 900px) { nav { padding: 18px 5%; } .resource-grid { grid-template-columns: 1fr; } }
-    </style>
+    .btn-premium {
+      background: var(--primary);
+      color: var(--white);
+      padding: 10px 25px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 10px 20px rgba(58, 90, 64, 0.15);
+    }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 70px 10% 50px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .badge-premium {
+      background: var(--section-bg);
+      color: var(--text-muted);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.1;
+      letter-spacing: -2.5px;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* CONTENT */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 10% 80px;
+    }
+
+    .category-section {
+      background: var(--white);
+      border-radius: 32px;
+      padding: 40px;
+      margin-bottom: 28px;
+      border: 1px solid rgba(0,0,0,0.05);
+      box-shadow: 0 4px 24px rgba(58,90,64,0.04);
+    }
+
+    .category-section h2 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 24px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .resource-card {
+      background: var(--section-bg);
+      border: 1px solid rgba(0,0,0,0.04);
+      border-radius: 20px;
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .resource-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 32px rgba(58,90,64,0.1);
+      background: var(--white);
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--white);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      margin-bottom: 14px;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .resource-card h3 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .resource-card p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin: 0;
+      font-weight: 400;
+    }
+
+    /* FOOTER CTA */
+    .footer-cta {
+      text-align: center;
+      padding: 80px 10%;
+      background: var(--section-bg);
+      border-radius: 50px;
+      margin: 0 10% 60px;
+    }
+
+    .footer-cta h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .footer-cta p {
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      font-size: 0.95rem;
+    }
+
+    footer {
+      padding: 40px 10%;
+      font-size: 0.75rem;
+      color: #aaa;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .nav-buttons { display: none; }
+      .footer-cta { margin: 0 4% 40px; border-radius: 24px; }
+    }
+  
+    /* PAGE LABEL STRIP */
+    .page-label-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 10%;
+      background: var(--section-bg);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+    }
+    .page-label-strip .pl-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .page-label-strip .pl-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .page-label-strip .pl-home {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      opacity: 0.6;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
+    .page-label-strip .pl-sep { opacity: 0.4; font-weight: 300; }
+    .page-label-strip .pl-current { color: var(--text-main); }
+
+  </style>
 </head>
+
 <body>
 
-<nav>
+  <!-- NAV -->
+  <nav>
     <a href="/" class="logo">MindNest</a>
-    <a href="/" class="back-link">← Back to Home</a>
-</nav>
+    <div class="nav-buttons">
+      <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Mode</button>
+      <a href="/articles" class="nav-link">Insights</a>
+      <a href="/dashboard" class="nav-link">Dashboard</a>
+      <a href="/zen" class="nav-link">Zen Zone</a>
+      <a href="/signup" class="btn-premium">Start Journey</a>
+    </div>
+  </nav>
 
-<div class="container">
-    <header class="hero">
-        <div class="badge">Knowledge Library</div>
-        <h1>Curated Resources</h1>
-        <p>Expert guides and support links from global health authorities to aid your journey.</p>
-    </header>
+  <!-- PAGE LABEL -->
+  <div class="page-label-strip">
+    <div class="pl-dot" style="background:#5b8a7a;"></div>
+    <div class="pl-breadcrumb">
+      <a href="/" class="pl-home">MindNest</a>
+      <span class="pl-sep">/</span>
+      <span class="pl-current">📚 Resources</span>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="badge-premium">Curated Knowledge Base</div>
+    <h1>Mental Health<br/>Resources</h1>
+    <p>Curated guides and support links from global health authorities — all in one place.</p>
+  </div>
+
+  <!-- CARDS -->
+  <div class="container">
 
     <div class="category-section">
-        <h2>General Overview</h2>
-        <div class="resource-grid">
-            <a href="https://www.who.int/health-topics/mental-health" target="_blank" class="resource-card">
-                <h3>WHO Overview</h3>
-                <p>Foundational insights on mental health definitions and global significance.</p>
-            </a>
-            <a href="https://www.nimh.nih.gov/health" target="_blank" class="resource-card">
-                <h3>NIMH Hub</h3>
-                <p>Official NIMH resources featuring comprehensive fact sheets and brochures.</p>
-            </a>
-        </div>
+      <h2>General Overview</h2>
+      <div class="resource-grid">
+        <a href="https://www.who.int/health-topics/mental-health" target="_blank" class="resource-card">
+          <div class="card-icon">🌍</div>
+          <h3>WHO Overview</h3>
+          <p>Explains what mental health is and why it matters globally.</p>
+        </a>
+        <a href="https://www.who.int/news-room/fact-sheets/detail/mental-disorders" target="_blank" class="resource-card">
+          <div class="card-icon">📋</div>
+          <h3>WHO Fact Sheet</h3>
+          <p>Key facts about anxiety, depression, and more.</p>
+        </a>
+        <a href="https://www.nimh.nih.gov/health" target="_blank" class="resource-card">
+          <div class="card-icon">🏛️</div>
+          <h3>NIMH Information Hub</h3>
+          <p>Official resources with fact sheets and brochures.</p>
+        </a>
+      </div>
     </div>
 
     <div class="category-section">
-        <h2>Anxiety & Stress</h2>
-        <div class="resource-grid">
-            <a href="https://www.nimh.nih.gov/health/topics/anxiety-disorders" target="_blank" class="resource-card">
-                <h3>Anxiety Disorders</h3>
-                <p>Detailed breakdown of symptoms, clinical treatments, and support avenues.</p>
-            </a>
-            <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
-                <h3>Mental Health UK</h3>
-                <p>Actionable self-help tips and evidence-based support guidance.</p>
-            </a>
-        </div>
+      <h2>Anxiety & Stress</h2>
+      <div class="resource-grid">
+        <a href="https://www.nimh.nih.gov/health/topics/anxiety-disorders" target="_blank" class="resource-card">
+          <div class="card-icon">😰</div>
+          <h3>NIMH – Anxiety Disorders</h3>
+          <p>Symptoms, treatments, and support options.</p>
+        </a>
+        <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+          <div class="card-icon">🇬🇧</div>
+          <h3>Mental Health UK</h3>
+          <p>Self-help tips and support guidance.</p>
+        </a>
+      </div>
     </div>
 
     <div class="category-section">
-        <h2>Depression</h2>
-        <div class="resource-grid">
-            <a href="https://www.nimh.nih.gov/health/topics/depression" target="_blank" class="resource-card">
-                <h3>NIMH – Depression</h3>
-                <p>A comprehensive guide to identifying symptoms and exploring treatment paths.</p>
-            </a>
-        </div>
+      <h2>Depression</h2>
+      <div class="resource-grid">
+        <a href="https://www.nimh.nih.gov/health/topics/depression" target="_blank" class="resource-card">
+          <div class="card-icon">🌧️</div>
+          <h3>NIMH – Depression</h3>
+          <p>Comprehensive info on depression symptoms and treatments.</p>
+        </a>
+        <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+          <div class="card-icon">🇬🇧</div>
+          <h3>Mental Health UK</h3>
+          <p>Self-help tips and support guidance.</p>
+        </a>
+      </div>
     </div>
 
     <div class="category-section">
-        <h2>ADHD</h2>
-        <div class="resource-grid">
-            <a href="https://www.nimh.nih.gov/health/topics/attention-deficit-hyperactivity-disorder-adhd" target="_blank" class="resource-card">
-                <h3>NIMH – ADHD</h3>
-                <p>Understanding diagnosis and modern treatment options for focus challenges.</p>
-            </a>
-        </div>
+      <h2>ADHD</h2>
+      <div class="resource-grid">
+        <a href="https://www.nimh.nih.gov/health/topics/attention-deficit-hyperactivity-disorder-adhd" target="_blank" class="resource-card">
+          <div class="card-icon">⚡</div>
+          <h3>NIMH – ADHD</h3>
+          <p>Symptoms, diagnosis, and treatment options.</p>
+        </a>
+        <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+          <div class="card-icon">🇬🇧</div>
+          <h3>Mental Health UK</h3>
+          <p>Self-help tips and support guidance.</p>
+        </a>
+      </div>
     </div>
 
     <div class="category-section">
-        <h2>OCD & Related Disorders</h2>
-        <div class="resource-grid">
-            <a href="https://www.nimh.nih.gov/health/topics/obsessive-compulsive-disorder-ocd" target="_blank" class="resource-card">
-                <h3>NIMH – OCD</h3>
-                <p>Exploring the symptoms and clinical management of OCD.</p>
-            </a>
-        </div>
+      <h2>OCD & Related Disorders</h2>
+      <div class="resource-grid">
+        <a href="https://www.nimh.nih.gov/health/topics/obsessive-compulsive-disorder-ocd" target="_blank" class="resource-card">
+          <div class="card-icon">🔄</div>
+          <h3>NIMH – OCD</h3>
+          <p>Symptoms, diagnosis, and treatment options.</p>
+        </a>
+        <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+          <div class="card-icon">🇬🇧</div>
+          <h3>Mental Health UK</h3>
+          <p>Self-help tips and support guidance.</p>
+        </a>
+      </div>
     </div>
 
     <div class="category-section">
-        <h2>Bipolar Disorder</h2>
-        <div class="resource-grid">
-            <a href="https://www.nimh.nih.gov/health/topics/bipolar-disorder" target="_blank" class="resource-card">
-                <h3>NIMH – Bipolar</h3>
-                <p>Insights into mood transitions and clinical management strategies.</p>
-            </a>
-        </div>
+      <h2>Bipolar Disorder</h2>
+      <div class="resource-grid">
+        <a href="https://www.nimh.nih.gov/health/topics/bipolar-disorder" target="_blank" class="resource-card">
+          <div class="card-icon">🌓</div>
+          <h3>NIMH – Bipolar Disorder</h3>
+          <p>Symptoms, diagnosis, and treatment options.</p>
+        </a>
+        <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+          <div class="card-icon">🇬🇧</div>
+          <h3>Mental Health UK</h3>
+          <p>Self-help tips and support guidance.</p>
+        </a>
+      </div>
     </div>
 
     <div class="category-section">
-        <h2>Psychosis & Schizophrenia</h2>
-        <div class="resource-grid">
-            <a href="https://www.nimh.nih.gov/health/topics/schizophrenia" target="_blank" class="resource-card">
-                <h3>NIMH – Schizophrenia</h3>
-                <p>Comprehensive clinical overview of schizophrenia and psychosis care.</p>
-            </a>
-        </div>
+      <h2>Psychosis & Schizophrenia</h2>
+      <div class="resource-grid">
+        <a href="https://www.nimh.nih.gov/health/topics/schizophrenia" target="_blank" class="resource-card">
+          <div class="card-icon">🧩</div>
+          <h3>NIMH – Schizophrenia</h3>
+          <p>Symptoms, diagnosis, and treatment options.</p>
+        </a>
+        <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+          <div class="card-icon">🇬🇧</div>
+          <h3>Mental Health UK</h3>
+          <p>Self-help tips and support guidance.</p>
+        </a>
+      </div>
     </div>
 
     <div class="category-section">
-        <h2>Eating Disorders</h2>
-        <div class="resource-grid">
-            <a href="https://www.nimh.nih.gov/health/topics/eating-disorders" target="_blank" class="resource-card">
-                <h3>NIMH – Eating Disorders</h3>
-                <p>Resources for identifying and treating various eating-related challenges.</p>
-            </a>
-        </div>
+      <h2>Eating Disorders</h2>
+      <div class="resource-grid">
+        <a href="https://www.nimh.nih.gov/health/topics/eating-disorders" target="_blank" class="resource-card">
+          <div class="card-icon">🥗</div>
+          <h3>NIMH – Eating Disorders</h3>
+          <p>Symptoms, diagnosis, and treatment options.</p>
+        </a>
+        <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+          <div class="card-icon">🇬🇧</div>
+          <h3>Mental Health UK</h3>
+          <p>Self-help tips and support guidance.</p>
+        </a>
+      </div>
     </div>
 
     <div class="category-section">
-        <h2>Addiction & Habits</h2>
-        <div class="resource-grid">
-            <a href="https://www.nimh.nih.gov/health/topics/substance-use-disorders" target="_blank" class="resource-card">
-                <h3>Substance Use Hub</h3>
-                <p>Information on managing substance-related habit challenges.</p>
-            </a>
-        </div>
+      <h2>Addiction & Habit Challenges</h2>
+      <div class="resource-grid">
+        <a href="https://www.nimh.nih.gov/health/topics/substance-use-disorders" target="_blank" class="resource-card">
+          <div class="card-icon">🔗</div>
+          <h3>NIMH – Substance Use Disorders</h3>
+          <p>Symptoms, diagnosis, and treatment options.</p>
+        </a>
+        <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+          <div class="card-icon">🇬🇧</div>
+          <h3>Mental Health UK</h3>
+          <p>Self-help tips and support guidance.</p>
+        </a>
+      </div>
     </div>
 
     <div class="category-section">
-        <h2>PTSD</h2>
-        <div class="resource-grid">
-            <a href="https://www.nimh.nih.gov/health/topics/post-traumatic-stress-disorder-ptsd" target="_blank" class="resource-card">
-                <h3>NIMH – PTSD</h3>
-                <p>Understanding symptoms and resilience after traumatic events.</p>
-            </a>
-        </div>
+      <h2>Postpartum Depression</h2>
+      <div class="resource-grid">
+        <a href="https://www.nimh.nih.gov/health/topics/postpartum-depression" target="_blank" class="resource-card">
+          <div class="card-icon">🤱</div>
+          <h3>NIMH – Postpartum Depression</h3>
+          <p>Symptoms, diagnosis, and treatment options.</p>
+        </a>
+        <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+          <div class="card-icon">🇬🇧</div>
+          <h3>Mental Health UK</h3>
+          <p>Self-help tips and support guidance.</p>
+        </a>
+      </div>
     </div>
 
     <div class="category-section">
-        <h2>Postpartum Depression</h2>
-        <div class="resource-grid">
-            <a href="https://www.nimh.nih.gov/health/topics/postpartum-depression" target="_blank" class="resource-card">
-                <h3>NIMH – Postpartum</h3>
-                <p>Support guides for new mothers navigating emotional shifts.</p>
-            </a>
-        </div>
+      <h2>Child & Teen Mental Health</h2>
+      <div class="resource-grid">
+        <a href="https://www.nimh.nih.gov/health/topics/child-and-adolescent-mental-health" target="_blank" class="resource-card">
+          <div class="card-icon">🧒</div>
+          <h3>NIMH – Child & Teen Mental Health</h3>
+          <p>Symptoms, diagnosis, and treatment options.</p>
+        </a>
+        <a href="https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics" target="_blank" class="resource-card">
+          <div class="card-icon">🇬🇧</div>
+          <h3>Mental Health UK</h3>
+          <p>Self-help tips and support guidance.</p>
+        </a>
+      </div>
     </div>
 
-    <div class="category-section">
-        <h2>Child & Teen Mental Health</h2>
-        <div class="resource-grid">
-            <a href="https://www.nimh.nih.gov/health/topics/child-and-adolescent-mental-health" target="_blank" class="resource-card">
-                <h3>Youth Mental Health</h3>
-                <p>Specific resources for the younger generation and their guardians.</p>
-            </a>
-        </div>
-    </div>
-</div>
+  </div>
+
+  <!-- FOOTER CTA -->
+  <section class="footer-cta">
+    <h2>Begin your reflection.</h2>
+    <p>Join a community committed to psychological growth and habit mastery.</p>
+    <a href="/signup" class="btn-premium">Get Started for Free</a>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 MindNest. A BCA Capstone Project.</p>
+  </footer>
+
+  <script>
+    function toggleTheme() {
+      const root = document.documentElement;
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    }
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+  </script>
 
 </body>
 </html>

@@ -1,280 +1,866 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <title>MindNest | Assessment Center</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <style>
-        :root {
-            --primary: #4f7f6a;
-            --secondary: #e6f0ec;
-            --text: #2f2f2f;
-            --bg: #f9faf9;
-            --white: #ffffff;
-            --warm-gold: #d1a054;
-            --soft-red: #f87171;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindNest | Assessment Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary: #3a5a40;
+      --accent: #a3b18a;
+      --bg-base: #fdfdfd;
+      --text-main: #344e41;
+      --text-muted: #588157;
+      --white: #ffffff;
+      --glass: rgba(255,255,255,0.85);
+      --section-bg: #f4f6f4;
+      --danger: #c0392b;
+      --warning: #c89640;
+      --success: #3a5a40;
+      --mild: #7a9e6a;
+      --border: rgba(58,90,64,0.08);
+    }
+    [data-theme="dark"] {
+      --primary: #a3b18a;
+      --accent: #3a5a40;
+      --bg-base: #141a14;
+      --text-main: #f1f4f1;
+      --text-muted: #a3b18a;
+      --white: #1e2a1e;
+      --glass: rgba(20,26,20,0.9);
+      --section-bg: #1e2a1e;
+      --border: rgba(163,177,138,0.12);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans',sans-serif; }
+    body { background:var(--bg-base); color:var(--text-main); min-height:100vh; transition:background 0.4s,color 0.4s; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); }
+    /* NAV */
+    nav { display:flex; justify-content:space-between; align-items:center; padding:18px 8%; background:var(--glass); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:1000; }
+    .logo { font-weight:800; font-size:1.3rem; letter-spacing:-1.5px; color:var(--primary); text-decoration:none; }
+    .nav-buttons { display:flex; gap:28px; align-items:center; }
+    .nav-link { text-decoration:none; color:var(--text-main); font-size:0.78rem; font-weight:600; letter-spacing:0.8px; text-transform:uppercase; }
+    .theme-toggle { background:none; border:1.5px solid var(--accent); color:var(--primary); padding:6px 14px; border-radius:10px; cursor:pointer; font-size:0.75rem; font-weight:700; transition:all 0.2s; }
+    .theme-toggle:hover { background:var(--primary); color:white; border-color:var(--primary); }
+    .btn-premium { background:var(--primary); color:var(--white); padding:10px 22px; border-radius:12px; text-decoration:none; font-size:0.85rem; font-weight:700; box-shadow:0 8px 20px rgba(58,90,64,0.2); }
 
-        /* --- ZEN ZONE STYLE HEADER --- */
-        .zen-header {
-            background: var(--white);
-            padding: 20px 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .logo { font-size: 1.6rem; font-weight: 700; color: var(--primary); letter-spacing: -1px; }
-        .nav-links { display: flex; gap: 30px; }
-        .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; transition: 0.3s; }
-        .nav-links a:hover { color: var(--primary); }
+    /* PAGE STRIP */
+    .page-label-strip { display:flex; align-items:center; gap:10px; padding:9px 8%; background:var(--section-bg); border-bottom:1px solid var(--border); font-size:0.68rem; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-muted); }
+    .pl-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; background:#8a6a5b; }
+    .pl-home { color:var(--text-muted); text-decoration:none; opacity:0.6; font-size:0.68rem; text-transform:uppercase; letter-spacing:1.2px; }
+    .pl-sep { opacity:0.4; }
 
-        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-        
-        .hero-section {
-            background: linear-gradient(135deg, #fff 0%, #f0f7f4 100%);
-            padding: 60px;
-            border-radius: 30px;
-            text-align: center;
-            margin-bottom: 40px;
-            border: 1px solid rgba(79, 127, 106, 0.1);
-        }
-        .hero-section h1 { color: var(--primary); font-size: 2.8rem; margin-bottom: 15px; }
-        .hero-section p { font-size: 1.1rem; color: #666; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+    /* HERO */
+    .hero { text-align:center; padding:60px 8% 44px; max-width:1100px; margin:0 auto; }
+    .badge-premium { background:var(--section-bg); color:var(--text-muted); padding:6px 16px; border-radius:100px; font-size:0.62rem; font-weight:800; text-transform:uppercase; letter-spacing:2px; margin-bottom:20px; display:inline-block; border:1px solid var(--border); }
+    .hero h1 { font-size:clamp(2.2rem,5vw,3.6rem); font-weight:800; color:var(--primary); line-height:1.05; letter-spacing:-2.5px; margin-bottom:14px; }
+    .hero p { color:var(--text-muted); font-size:0.98rem; max-width:540px; margin:0 auto; line-height:1.75; }
 
-        /* Assessment Grid */
-        .test-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
-        .test-card {
-            background: var(--white); border: 1px solid #eee; padding: 35px 25px; border-radius: 20px;
-            cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-align: center;
-            font-weight: 600; color: var(--primary); font-size: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-        }
-        .test-card:hover { transform: translateY(-8px); background: var(--primary); color: var(--white); box-shadow: 0 15px 30px rgba(79, 127, 106, 0.2); }
+    /* GRID */
+    .container { max-width:1100px; margin:0 auto; padding:16px 8% 70px; }
+    .test-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; }
+    .test-card { background:var(--white); border:1.5px solid var(--border); color:var(--text-main); padding:26px 22px; border-radius:20px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:all 0.25s ease; font-size:0.77rem; font-weight:800; text-align:left; letter-spacing:0.8px; text-transform:uppercase; box-shadow:0 2px 12px rgba(58,90,64,0.04); }
+    .test-card:hover { transform:translateY(-4px); background:var(--primary); color:white; border-color:transparent; box-shadow:0 12px 28px rgba(58,90,64,0.2); }
+    .plus-icon { width:30px; height:30px; background:var(--section-bg); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.1rem; font-weight:300; flex-shrink:0; transition:background 0.25s; }
+    .test-card:hover .plus-icon { background:rgba(255,255,255,0.2); color:white; }
 
-        /* Quiz Overlay */
-        #quizOverlay { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.98); z-index: 1000; overflow-y: auto; padding: 40px 20px; }
-        .quiz-modal { max-width: 800px; margin: 0 auto; position: relative; }
-        .close-btn { position: fixed; top: 30px; right: 40px; cursor: pointer; font-size: 30px; color: var(--primary); font-weight: 300; }
-        
-        .opt-btn { width: 100%; text-align: left; padding: 18px; margin: 10px 0; border: 1px solid #eee; border-radius: 12px; background: var(--white); cursor: pointer; transition: 0.2s; font-size: 1rem; }
-        .opt-btn:hover { background: var(--secondary); border-color: var(--primary); }
-        .selected-opt { background: var(--primary) !important; color: var(--white) !important; border-color: var(--primary); }
+    /* OVERLAY */
+    #quizOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.55); z-index:2000; align-items:center; justify-content:center; backdrop-filter:blur(8px); }
+    .quiz-modal { background:var(--bg-base); width:95%; max-width:700px; padding:36px 40px; border-radius:28px; max-height:90vh; overflow-y:auto; position:relative; box-shadow:0 40px 100px rgba(0,0,0,0.2); }
+    .modal-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:22px; }
+    #quizTitle { font-size:1.5rem; font-weight:800; color:var(--primary); letter-spacing:-1px; }
+    .modal-subtitle { font-size:0.78rem; color:var(--text-muted); margin-top:5px; line-height:1.5; }
+    .close-btn { background:var(--section-bg); border:none; width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:0.9rem; color:var(--text-muted); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.2s; }
+    .close-btn:hover { background:var(--danger); color:white; }
 
-        /* PDF Styles */
-        .report-page { background: white; padding: 60px; color: var(--text); line-height: 1.8; font-family: 'Segoe UI', sans-serif; }
-        .section-box { padding: 30px; border-radius: 20px; margin-bottom: 30px; border: 1px solid #f0f0f0; }
-        .hope-header { color: var(--primary); border-bottom: 2px solid var(--secondary); padding-bottom: 20px; margin-bottom: 30px; font-size: 2.2rem; text-align: center; }
-        
-        @media print { .page-break { page-break-before: always; } }
-    </style>
+    /* PROGRESS BAR */
+    .progress-wrap { margin-bottom:24px; }
+    .progress-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin-bottom:8px; display:flex; justify-content:space-between; }
+    .progress-bar { height:4px; background:var(--border); border-radius:100px; overflow:hidden; }
+    .progress-fill { height:100%; background:var(--primary); border-radius:100px; transition:width 0.4s ease; }
+
+    /* QUESTIONS */
+    .question-block { margin-bottom:24px; animation:fadeUp 0.3s ease; }
+    .question-text { font-size:0.9rem; font-weight:600; color:var(--text-main); margin-bottom:10px; line-height:1.55; }
+    .options-group { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .opt-btn { width:100%; text-align:center; padding:11px 14px; border:1.5px solid var(--border); border-radius:12px; background:var(--white); cursor:pointer; transition:all 0.18s; font-size:0.82rem; font-weight:600; color:var(--text-main); font-family:'Plus Jakarta Sans',sans-serif; }
+    .opt-btn:hover { background:var(--section-bg); border-color:var(--accent); }
+    .opt-btn.selected { background:var(--primary); color:white; border-color:var(--primary); }
+    .btn-submit-quiz { width:100%; background:var(--primary); color:white; border:none; padding:15px; border-radius:14px; font-size:0.9rem; font-weight:700; font-family:'Plus Jakarta Sans',sans-serif; cursor:pointer; margin-top:16px; box-shadow:0 8px 20px rgba(58,90,64,0.2); transition:all 0.25s; }
+    .btn-submit-quiz:hover { transform:translateY(-2px); box-shadow:0 14px 28px rgba(58,90,64,0.3); }
+
+    /* ===== REPORT ===== */
+    .report-wrap { margin-top:24px; animation:fadeUp 0.4s ease; }
+
+    /* Header band */
+    .report-header-band { background:var(--primary); color:white; border-radius:20px; padding:28px 32px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
+    .report-header-band .rh-left h2 { font-size:1.3rem; font-weight:800; letter-spacing:-0.5px; margin-bottom:4px; }
+    .report-header-band .rh-left p { font-size:0.75rem; opacity:0.75; }
+    .report-header-band .rh-score { text-align:right; }
+    .report-header-band .rh-score .sc-num { font-size:3rem; font-weight:800; letter-spacing:-3px; line-height:1; }
+    .report-header-band .rh-score .sc-label { font-size:0.7rem; opacity:0.7; text-transform:uppercase; letter-spacing:1px; }
+    .report-header-band .rh-score .sc-level { font-size:0.85rem; font-weight:700; margin-top:2px; }
+
+    /* Cards inside report */
+    .report-card { background:var(--white); border:1.5px solid var(--border); border-radius:18px; padding:24px 28px; margin-bottom:14px; }
+    .report-card-title { font-size:0.68rem; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-muted); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+    .report-card-title span { font-size:1rem; }
+
+    /* Score chart row */
+    .score-visual-row { display:flex; align-items:center; gap:24px; flex-wrap:wrap; }
+    .chart-wrap { width:120px; height:120px; flex-shrink:0; }
+
+    /* Severity bar */
+    .severity-spectrum { margin:10px 0 6px; }
+    .severity-track { height:10px; border-radius:100px; background:linear-gradient(to right, #3a5a40 0%, #7a9e6a 33%, #c89640 66%, #c0392b 100%); position:relative; }
+    .severity-marker { position:absolute; top:-4px; width:18px; height:18px; border-radius:50%; background:white; border:3px solid var(--text-main); transform:translateX(-50%); transition:left 0.8s cubic-bezier(0.34,1.56,0.64,1); box-shadow:0 2px 8px rgba(0,0,0,0.15); }
+    .severity-labels { display:flex; justify-content:space-between; margin-top:6px; font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-muted); }
+
+    /* Domain breakdown */
+    .domain-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .domain-item { background:var(--section-bg); border-radius:12px; padding:14px 16px; }
+    .domain-label { font-size:0.72rem; font-weight:700; color:var(--text-muted); margin-bottom:8px; }
+    .domain-bar { height:6px; background:var(--border); border-radius:100px; overflow:hidden; }
+    .domain-fill { height:100%; border-radius:100px; transition:width 1s ease; }
+    .domain-score { font-size:0.75rem; font-weight:700; color:var(--text-main); margin-top:5px; }
+
+    /* Symptoms list */
+    .symptom-tag { display:inline-block; padding:5px 12px; border-radius:100px; font-size:0.72rem; font-weight:700; margin:4px 3px; border:1.5px solid var(--border); color:var(--text-muted); background:var(--section-bg); }
+    .symptom-tag.flagged { background:rgba(192,57,43,0.08); border-color:rgba(192,57,43,0.25); color:#c0392b; }
+    .symptom-tag.mild { background:rgba(200,150,64,0.08); border-color:rgba(200,150,64,0.25); color:#c89640; }
+    .symptom-tag.ok { background:rgba(58,90,64,0.08); border-color:rgba(58,90,64,0.2); color:#3a5a40; }
+
+    /* Science box */
+    .science-box { background:var(--section-bg); border-left:4px solid var(--primary); border-radius:0 14px 14px 0; padding:18px 20px; margin-top:10px; }
+    .science-box .sci-head { font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--primary); margin-bottom:8px; }
+    .science-box p { font-size:0.85rem; line-height:1.7; color:var(--text-main); }
+
+    /* Validation quote */
+    .validation-quote { font-style:italic; font-size:0.95rem; line-height:1.75; color:var(--text-main); padding:20px 24px; background:var(--section-bg); border-radius:16px; position:relative; }
+    .validation-quote::before { content:'"'; font-size:3rem; color:var(--accent); line-height:0.6; position:absolute; top:20px; left:12px; font-family:Georgia,serif; }
+    .validation-quote p { padding-left:24px; }
+
+    /* Tips list */
+    .tip-item { display:flex; gap:14px; padding:14px 0; border-bottom:1px solid var(--border); align-items:flex-start; }
+    .tip-item:last-child { border-bottom:none; }
+    .tip-num { width:28px; height:28px; border-radius:50%; background:var(--primary); color:white; font-size:0.72rem; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+    .tip-title { font-size:0.88rem; font-weight:700; color:var(--text-main); margin-bottom:3px; }
+    .tip-desc { font-size:0.8rem; color:var(--text-muted); line-height:1.6; }
+
+    /* Resources */
+    .resource-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+    .resource-chip { padding:8px 16px; border-radius:10px; font-size:0.78rem; font-weight:700; border:1.5px solid var(--border); text-decoration:none; color:var(--text-main); background:var(--section-bg); display:inline-flex; align-items:center; gap:6px; transition:all 0.2s; }
+    .resource-chip:hover { background:var(--primary); color:white; border-color:var(--primary); }
+
+    /* Disclaimer */
+    .disclaimer-strip { background:rgba(192,57,43,0.06); border:1.5px solid rgba(192,57,43,0.15); border-radius:14px; padding:16px 20px; display:flex; gap:12px; align-items:flex-start; margin-top:6px; }
+    .disclaimer-strip .di-icon { font-size:1.1rem; flex-shrink:0; }
+    .disclaimer-strip p { font-size:0.78rem; color:var(--danger); line-height:1.6; font-weight:500; }
+
+    /* Download btn */
+    .btn-pdf { width:100%; background:var(--section-bg); color:var(--text-main); border:1.5px solid var(--border); padding:14px; border-radius:12px; cursor:pointer; font-weight:700; font-size:0.85rem; font-family:'Plus Jakarta Sans',sans-serif; margin-top:14px; transition:all 0.2s; }
+    .btn-pdf:hover { background:var(--primary); color:white; border-color:var(--primary); }
+
+    /* FOOTER */
+    .footer-cta { text-align:center; padding:70px 8%; background:var(--section-bg); border-radius:40px; margin:0 8% 60px; }
+    .footer-cta h2 { font-size:1.9rem; font-weight:800; letter-spacing:-1.5px; color:var(--primary); margin-bottom:10px; }
+    .footer-cta p { color:var(--text-muted); margin-bottom:24px; font-size:0.95rem; }
+    footer { padding:36px 8%; font-size:0.72rem; color:#aaa; text-align:center; }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+    /* printContainer hidden on screen - printing uses new window */
+
+    @media (max-width:900px) {
+      .nav-buttons { display:none; }
+      .footer-cta { margin:0 4% 40px; border-radius:24px; }
+      .quiz-modal { padding:28px 22px; }
+      .options-group { grid-template-columns:1fr; }
+      .domain-grid { grid-template-columns:1fr; }
+    }
+  </style>
 </head>
 <body>
 
-<header class="zen-header">
-    <div class="logo">MindNest</div>
-    <nav class="nav-links">
-        <a href="#">Home</a>
-        <a href="/zen">Zen Zone</a>
-        <a href="#" style="color: var(--primary); font-weight: 700;">Assessments</a>
-        <a href="#">Articles</a>
-    </nav>
-</header>
+<nav>
+  <a href="/" class="logo">MindNest</a>
+  <div class="nav-buttons">
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Mode</button>
+    <a href="/articles" class="nav-link">Insights</a>
+    <a href="/dashboard" class="nav-link">Dashboard</a>
+    <a href="/zen" class="nav-link">Zen Zone</a>
+    <a href="/signup" class="btn-premium">Start Journey</a>
+  </div>
+</nav>
 
-<div class="container">
-    <div class="hero-section">
-        <h1>Your Wellness Journey</h1>
-        <p>Take a deep breath. These assessments are designed to help you understand your patterns so you can grow with intention.</p>
-    </div>
-
-    <div class="test-grid">
-        <button class="test-card" onclick="openQuiz('Depression')">Depression Support</button>
-        <button class="test-card" onclick="openQuiz('Anxiety')">Anxiety Support</button>
-        <button class="test-card" onclick="openQuiz('ADHD')">Focus & ADHD</button>
-        <button class="test-card" onclick="openQuiz('OCD')">OCD Support</button>
-        <button class="test-card" onclick="openQuiz('Bipolar')">Bipolar Support</button>
-        <button class="test-card" onclick="openQuiz('Psychosis')">Psychosis Support</button>
-        <button class="test-card" onclick="openQuiz('Eating')">Eating Disorder Support</button>
-        <button class="test-card" onclick="openQuiz('PTSD')">Healing from Trauma</button>
-        <button class="test-card" onclick="openQuiz('Addiction')">Addiction Support</button>
-        <button class="test-card" onclick="openQuiz('SocialAnxiety')">Social Anxiety</button>
-        <button class="test-card" onclick="openQuiz('Postpartum')">Postpartum Support</button>
-        <button class="test-card" onclick="openQuiz('Child')">Child Wellness</button>
-    </div>
+<div class="page-label-strip">
+  <div class="pl-dot"></div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <a href="/" class="pl-home">MindNest</a>
+    <span class="pl-sep">/</span>
+    <span>🔍 Assessment Center</span>
+  </div>
 </div>
 
+<div class="hero">
+  <div class="badge-premium">Clinically Validated Tools</div>
+  <h1>Assessment<br/>Center</h1>
+  <p>Take a confidential screening to better understand your mental health. These tools are evidence-based to help you identify patterns early — not as a diagnosis, but as a starting point for clarity.</p>
+</div>
+
+<div class="container">
+  <div class="test-grid">
+    <button class="test-card" onclick="openQuiz('Depression')">Depression <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('Anxiety')">Anxiety <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('ADHD')">ADHD <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('OCD')">OCD <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('Bipolar')">Bipolar <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('Psychosis')">Psychosis <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('Eating')">Eating Disorder <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('PTSD')">PTSD <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('Addiction')">Addiction <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('SocialAnxiety')">Social Anxiety <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('Postpartum')">Postpartum <span class="plus-icon">+</span></button>
+    <button class="test-card" onclick="openQuiz('Child')">Child Wellness <span class="plus-icon">+</span></button>
+  </div>
+</div>
+
+<section class="footer-cta">
+  <h2>Begin your reflection.</h2>
+  <p>Join a community committed to psychological growth and wellbeing.</p>
+  <a href="/dashboard" class="btn-premium">Go to Dashboard</a>
+</section>
+<footer><p>&copy; 2026 MindNest. A BCA Capstone Project. For educational purposes only.</p></footer>
+
+<!-- OVERLAY -->
 <div id="quizOverlay">
-    <div class="quiz-modal">
-        <span class="close-btn" onclick="closeQuiz()">✕</span>
-        <h2 id="quizTitle" style="color:var(--primary); font-size: 2rem; margin-bottom:10px;"></h2>
-        <p id="quizSub" style="color:#888; margin-bottom:40px;">Please reflect on your experiences over the last 14 days.</p>
-        <div id="quizContent"></div>
+  <div class="quiz-modal">
+    <div class="modal-header">
+      <div>
+        <div id="quizTitle">Assessment</div>
+        <div class="modal-subtitle">Select the option that best describes your experience over the last 2 weeks.</div>
+      </div>
+      <button class="close-btn" onclick="closeQuiz()">✕</button>
     </div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span id="progressText">0 / 10 answered</span><span id="progressPct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+    <div id="quizContent"></div>
+  </div>
 </div>
 
 <script>
-    // Full logic for all categories
-    const quizData = {
-        'Depression': ["Feeling sad or empty?", "Loss of interest?", "Low energy?", "Sleep issues?", "Hopelessness?", "Self-criticism?", "Focus trouble?", "Slowed movement?", "Loneliness?", "Negative outlook?"],
-        'Anxiety': ["Nervous/On edge?", "Excessive worry?", "Can't stop worrying?", "Restless?", "Easily fatigued?", "Focus trouble?", "Irritability?", "Fear of bad outcomes?", "Physical tension?", "Life interference?"],
-        'ADHD': ["Distractibility?", "Hyperactivity?", "Forgetfulness?", "Poor organization?", "Impulsivity?", "Starting but not finishing?", "Mental fog?", "Fidgeting?", "Interrupting others?", "Time blindness?"],
-        'OCD': ["Intrusive thoughts?", "Ritualistic habits?", "Fear of germs?", "Need for symmetry?", "Excessive checking?", "Compulsive counting?", "Fear of harm?", "Repeating words?", "Clutter anxiety?", "Social avoidance?"],
-        'PTSD': ["Flashbacks?", "Nightmares?", "Avoidance of triggers?", "Hyper-vigilance?", "Startle response?", "Memory gaps?", "Detachment?", "Irritability?", "Emotional numbness?", "Sleep disturbances?"],
-        'Eating': ["Body image obsession?", "Calorie counting?", "Binge eating?", "Purging habits?", "Excessive exercise?", "Fear of weight gain?", "Eating in secret?", "Food guilt?", "Restricting food?", "Social eating fear?"],
-        'Bipolar': ["Mood swings?", "High energy peaks?", "Deep lows?", "Racing thoughts?", "Impulsive spending?", "Less sleep needed?", "Over-confidence?", "Depressive episodes?", "Agitation?", "Talking too fast?"],
-        'Psychosis': ["Hallucinations?", "Delusions?", "Disorganized speech?", "Paranoia?", "Flat emotions?", "Withdrawing socially?", "Confusion?", "Strange beliefs?", "Loss of motivation?", "Cognitive decline?"],
-        'Addiction': ["Cravings?", "Failed attempts to stop?", "Tolerance increase?", "Withdrawal signs?", "Life neglect?", "Hiding the habit?", "Financial stress?", "Risk taking?", "Conflict with family?", "Prioritizing use?"],
-        'SocialAnxiety': ["Fear of judgment?", "Avoiding crowds?", "Social blushing?", "Performance anxiety?", "Sweating in public?", "Shy in groups?", "Rehearsing talks?", "Post-event analysis?", "Fear of embarrassment?", "Avoiding phone calls?"],
-        'Postpartum': ["Low bond with baby?", "Infant worry?", "Birth trauma?", "Post-birth exhaustion?", "Intrusive baby thoughts?", "Parental guilt?", "Mood shifts?", "Lack of appetite?", "Isolation?", "Help avoidance?"],
-        'Child': ["Behavioral outbursts?", "School refusal?", "Bed wetting?", "Separation anxiety?", "Academic drop?", "Social withdrawal?", "New phobias?", "Appetite change?", "Regressive behavior?", "Aggression?"]
-    };
+// ===== THEME =====
+function toggleTheme() {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
 
-    const emotionalInsights = {
-        'Depression': {
-            validation: "This low mood is not a choice. It is a biological shutdown aimed at protecting a tired mind.",
-            science: "Depression is often linked to the 'Habenula'—a part of the brain that signals disappointment. When it's overactive, we lose motivation.",
-            roadmap: ["Step outside for 5 minutes", "Drink 2L of water", "Identify one 'small win'", "Contact a supportive friend"]
-        },
-        'Anxiety': {
-            validation: "Your anxiety is an overprotective friend. It's trying to keep you safe, but it's shouting too loud.",
-            science: "The 'Amygdala' is your brain's smoke detector. In anxiety, it's detecting smoke where there is none.",
-            roadmap: ["Practice Box Breathing", "Limit caffeine intake", "Write down 3 'What-ifs'", "Grounding (5-4-3-2-1 technique)"]
-        }
-        // ... (Logic continues for all categories)
-    };
+// ===== QUIZ DATA =====
+const quizData = {
+  Depression: {
+    questions: ["In the past two weeks, how often have you felt sad, low, or empty?","How often have you lost interest or pleasure in things you usually enjoy?","How often do you feel tired or low on energy, even without much physical work?","How often do you have trouble sleeping (sleeping too much or too little)?","How often do you feel hopeless about the future?","How often do you feel bad about yourself or feel like you are a failure?","How often do you find it hard to concentrate on studies, work, or tasks?","How often do you feel slow, unmotivated, or mentally heavy?","How often do you feel lonely or disconnected from people?","How often do negative thoughts interfere with your daily life?"],
+    domains: ["Mood","Anhedonia","Energy","Sleep","Hopelessness","Self-worth","Concentration","Motivation","Isolation","Cognition"]
+  },
+  Anxiety: {
+    questions: ["How often have you felt nervous, anxious, or on edge?","How often do you worry too much about different things, even small ones?","How often do you find it hard to control your worrying?","How often do you feel restless or unable to relax?","How often do you feel tired or exhausted because of worrying?","How often do you have trouble concentrating because your mind is full of worries?","How often do you feel irritated or easily annoyed due to stress?","How often do you feel afraid that something bad might happen?","How often do you experience physical signs of anxiety (fast heartbeat, sweating, etc.)?","How often does anxiety interfere with your studies, work, or daily life?"],
+    domains: ["Core Anxiety","Worry Control","Restlessness","Fatigue","Concentration","Irritability","Fear","Physical Symptoms","Avoidance","Daily Impact"]
+  },
+  ADHD: {
+    questions: ["How often do you find it hard to stay focused on tasks?","How often do you get easily distracted by sounds or notifications?","How often do you start tasks but struggle to finish them?","How often do you forget important things like deadlines or appointments?","How often do you feel restless or unable to sit still?","How often do you rush into things without thinking?","How often do you have trouble organizing your work or routine?","How often do you avoid tasks that need long mental effort?","How often do you feel your mind is always racing?","How often do these focus problems affect your relationships?"],
+    domains: ["Focus","Distraction","Task Completion","Memory","Hyperactivity","Impulsivity","Organization","Avoidance","Racing Mind","Social Impact"]
+  },
+  OCD: {
+    questions: ["How often do you get unwanted thoughts or images that keep coming back?","How often do these thoughts make you feel anxious or stressed?","How often do you feel the need to check things repeatedly (locks, switches)?","How often do you wash or clean more than necessary?","How often do you feel you must do actions in a specific way to feel calm?","How often do you repeat actions or words to reduce anxiety?","How often do you feel uncomfortable if things are not perfectly arranged?","How often do you avoid objects because they trigger stressful thoughts?","How often do you spend a lot of time on these habits?","How often do these behaviors interfere with your work or life?"],
+    domains: ["Intrusions","Anxiety","Checking","Contamination","Rituals","Repetition","Perfectionism","Avoidance","Time Spent","Functional Impact"]
+  },
+  Bipolar: {
+    questions: ["How often do you experience big mood changes (high and low)?","How often do you feel unusually happy or excited for days?","How often do you feel very sad, empty, or hopeless for days?","How often do you notice your energy level changes a lot?","How often do you need very little sleep but still feel full of energy?","How often do your thoughts race or you talk much more than usual?","How often do you do things impulsively during high-energy moods?","How often do you feel too unmotivated to do simple tasks?","How often do these mood changes affect your relationships?","How often do people comment that your behavior changes a lot?"],
+    domains: ["Mood Swings","Elevated Mood","Low Mood","Energy Changes","Sleep/Energy","Racing Thoughts","Impulsivity","Low Drive","Relationships","Observed Changes"]
+  },
+  Psychosis: {
+    questions: ["How often do you see or sense things others do not notice?","How often do you feel your thoughts are confused or mixed up?","How often do you believe others are watching you without proof?","How often do you find it hard to tell what is real?","How often do your thoughts feel disconnected?","How often do you feel your mind is not working the way it used to?","How often do you lose interest in people and prefer to stay isolated?","How often do you feel emotionally 'flat' or empty?","How often do these experiences make it hard to manage daily life?","How often do other people notice changes in your speech or behavior?"],
+    domains: ["Perceptual","Disorganized Thought","Paranoia","Reality Testing","Thought Disruption","Cognitive Change","Negative Affect","Emotional Blunting","Functional Impact","Observed Behavior"]
+  },
+  Eating: {
+    questions: ["How often do you worry a lot about your body shape or weight?","How often do you feel guilty or ashamed after eating?","How often do you skip meals to control your weight?","How often do you feel out of control while eating?","How often do you try to 'make up for eating' with fasting or over-exercise?","How often do you think about calories or dieting for a large part of the day?","How often do your eating habits affect your social life?","How often do you avoid eating in front of others?","How often do you feel unhappy with your body regardless of what others say?","How often does your relationship with food feel stressful?"],
+    domains: ["Body Image","Guilt","Restriction","Binge Episodes","Purging/Compensating","Food Preoccupation","Social Impact","Hiding Behavior","Body Dysmorphia","Food Relationship"]
+  },
+  PTSD: {
+    questions: ["How often do you have unwanted memories or nightmares about a scary experience?","How often do you feel upset when something reminds you of that experience?","How often do you try to avoid thinking about a painful event from your past?","How often do you avoid places or people that remind you of it?","How often do you feel constantly on edge or easily startled?","How often do you have trouble staying asleep?","How often do you feel irritable or have sudden emotional reactions?","How often do you feel distant from people you used to enjoy?","How often do you have difficulty concentrating because of stressful thoughts?","How often do these experiences interfere with your daily life?"],
+    domains: ["Intrusive Memories","Emotional Reactivity","Cognitive Avoidance","Behavioral Avoidance","Hypervigilance","Sleep","Irritability","Emotional Numbing","Concentration","Functional Impact"]
+  },
+  Addiction: {
+    questions: ["How often do you feel a strong urge to use a substance or repeat a habit?","How often do you use more or for longer than you planned?","How often do you try to cut down but find it difficult?","How often do you plan your day around it?","How often do you continue even knowing it's harming your health or work?","How often do you feel restless when you can't do it?","How often do you neglect responsibilities because of it?","How often do you hide how much you use or do it?","How often do you need more than before to feel the same satisfaction?","How often does this habit cause problems with people around you?"],
+    domains: ["Cravings","Loss of Control","Failed Quit Attempts","Preoccupation","Continued Use","Withdrawal","Neglect","Secrecy","Tolerance","Social Harm"]
+  },
+  SocialAnxiety: {
+    questions: ["How often do you feel nervous in social situations like group talks?","How often do you worry that others will judge or criticize you?","How often do you avoid social events to avoid embarrassment?","How often do you feel your heart race or hands shake around others?","How often do you replay social interactions and worry about what you said?","How often do you find it hard to speak up even when you want to?","How often do you feel self-conscious about how you look or sound?","How often do you prefer to stay invisible to avoid attention?","How often do you avoid presentations or calls because of fear?","How often does this fear affect your work or relationships?"],
+    domains: ["Social Nervousness","Fear of Judgment","Avoidance","Physical Symptoms","Rumination","Inhibition","Self-consciousness","Withdrawal","Performance Fear","Impact"]
+  },
+  Postpartum: {
+    questions: ["How often have you felt sad or empty since the baby was born?","How often do you cry easily or feel overwhelmed for no clear reason?","How often do you feel exhausted even when you get some rest?","How often do you feel hopeless?","How often do you lose interest in things you used to enjoy?","How often do you feel guilty or feel like you are not a good enough mother?","How often do you feel panicky about yourself or your baby?","How often do you have trouble sleeping even when the baby is resting?","How often do you feel emotionally distant from your baby?","How often do these feelings make it hard to take care of yourself?"],
+    domains: ["Core Mood","Emotional Lability","Fatigue","Hopelessness","Anhedonia","Maternal Guilt","Anxiety/Panic","Sleep","Bonding","Self-care"]
+  },
+  Child: {
+    questions: ["How often does your child seem sad or unhappy for long periods?","How often does your child get very anxious about normal situations?","How often does your child have tantrums that are hard to control?","How often does your child have trouble concentrating on homework?","How often does your child avoid school or friends they used to enjoy?","How often does your child have sleep or appetite problems?","How often does your child complain of pain without a clear medical reason?","How often does your child seem very irritable or overly sensitive?","How often do your child's emotions cause problems at school or home?","How often do you feel your child is not coping well for their age?"],
+    domains: ["Sadness","Anxiety","Behavior Regulation","Attention","Social Withdrawal","Somatic","Physical Complaints","Irritability","School Impact","Developmental Concern"]
+  }
+};
 
-    const getFullInsight = (type) => emotionalInsights[type] || {
-        validation: `Your experience with ${type} is valid. You are showing bravery just by naming these feelings.`,
-        science: "Mental health is a balance of chemistry and environment. Your brain has the power to rewire through neuroplasticity.",
-        roadmap: ["Prioritize sleep tonight", "Limit social media use", "Notice your breathing", "Reach out for help"]
-    };
+// ===== EMOTIONAL INSIGHTS =====
+const emotionalInsights = {
+  Depression: {
+    validation: "This low mood is not a character flaw or a choice. It is a physiological state that your brain is generating as a response to prolonged stress, chemical imbalance, or loss. What you are feeling is real, and it is recognized.",
+    science: "Depression is closely linked to the 'Habenula' — a small brain region that signals disappointment and failure. When overactive, it suppresses dopamine and serotonin, dimming motivation and pleasure. The good news: neuroplasticity means this can change.",
+    tips: [
+      { title: "Behavioral Activation", desc: "Pick one tiny task — making your bed, a 5-minute walk — and complete it. Action often comes before motivation, not after." },
+      { title: "Sunlight Exposure", desc: "Spend 10–20 minutes in natural light each morning. Sunlight regulates cortisol and serotonin rhythm, reducing depressive episodes." },
+      { title: "Social Connection", desc: "Even brief, low-effort contact with someone you trust (a text, a call) activates the brain's reward system and counters isolation." },
+      { title: "Sleep Hygiene", desc: "Depression disrupts sleep architecture. Try a consistent wake time even on weekends to reset your circadian rhythm." },
+      { title: "Limit Rumination", desc: "When the same thought loops, write it down and close the notebook. Externalizing thoughts reduces their emotional grip." }
+    ],
+    resources: ["Talk to your doctor or a mental health professional", "National Helpline (iCall India): 9152987821", "7 Cups — free online therapy chat: 7cups.com"]
+  },
+  Anxiety: {
+    validation: "Your anxiety is an overprotective inner alarm. It evolved to protect you from real danger — but it can't always distinguish between a threat and a thought.",
+    science: "The Amygdala acts as your brain's smoke detector. In anxiety, it triggers fight-or-flight even for perceived threats. The prefrontal cortex (rational thinking) can override this — but only when trained.",
+    tips: [
+      { title: "4-7-8 Breathing", desc: "Inhale for 4 counts, hold for 7, exhale for 8. This directly activates the parasympathetic nervous system and calms the amygdala." },
+      { title: "5-4-3-2-1 Grounding", desc: "Name 5 things you see, 4 you feel, 3 you hear, 2 you smell, 1 you taste. This interrupts anxiety's feedback loop." },
+      { title: "Limit Caffeine", desc: "Caffeine amplifies cortisol and adrenaline, directly worsening anxiety. Try reducing coffee intake for 2 weeks and observe any difference." },
+      { title: "Worry Scheduling", desc: "Give yourself a specific 15-minute window each day to worry intentionally. Outside of it, delay worries to your scheduled time." },
+      { title: "Cold Water on Face", desc: "Splashing cold water on your face activates the 'dive reflex' which slows heart rate rapidly during panic moments." }
+    ],
+    resources: ["Talk to a therapist specializing in CBT", "Headspace App for guided anxiety meditation", "iCall India: 9152987821"]
+  },
+  ADHD: {
+    validation: "Your brain is not broken. It is wired for novelty, crisis, and passion. It needs a different environment to thrive — not medication alone.",
+    science: "The Prefrontal Cortex manages executive function and impulse control. In ADHD, lower dopamine means the brain seeks high-stimulation shortcuts to feel reward. Body-doubling, timers, and novelty-based systems work because they provide that dopamine.",
+    tips: [
+      { title: "Time Blocking with Timers", desc: "Use a visible 25-minute timer (Pomodoro) to create artificial urgency. The brain responds well to countdowns." },
+      { title: "Body Doubling", desc: "Work in the presence of another person — a library, café, or video call with a friend. The social presence boosts focus." },
+      { title: "Distraction Pad", desc: "Keep a notepad beside you. When random thoughts intrude, write them down and return. This stops mental tab-switching." },
+      { title: "Chunk Tasks", desc: "Break any task into steps of 10 minutes or less. Large tasks are invisible to the ADHD brain until they have a first action." },
+      { title: "Reduce Decision Fatigue", desc: "Lay out clothes the night before, prepare a weekly meal rotation, automate recurring choices. Fewer decisions = more focus." }
+    ],
+    resources: ["ADHD specialist evaluation recommended", "ADDitude Magazine: additudemag.com", "iCall India: 9152987821"]
+  },
+  OCD: {
+    validation: "These intrusive thoughts are not a reflection of who you are or what you want. They are 'brain misfires' that anyone's brain could produce — your distress at them proves your good character.",
+    science: "OCD is linked to overactivity in the Cortico-Striatal-Thalamic-Cortical (CSTC) loop — essentially, the brain's 'error signal' gets stuck ON. ERP (Exposure and Response Prevention) therapy is the gold standard treatment because it retrains this loop.",
+    tips: [
+      { title: "Delay the Ritual by 1 Minute", desc: "When the urge hits, wait one minute before acting. Then two. Gradually, the anxiety peak passes and your brain learns the ritual isn't needed." },
+      { title: "Label the Thought", desc: "Say to yourself: 'I am having the thought that...' This creates distance between you and the thought, reducing its power." },
+      { title: "ERP Journaling", desc: "Track triggers, the thought, your anxiety level (1–10), and whether you resisted. Pattern visibility reduces power." },
+      { title: "Avoid Reassurance-Seeking", desc: "Asking others 'Are you sure it's okay?' temporarily relieves anxiety but reinforces the cycle. Try to sit with the uncertainty." },
+      { title: "Physical Activity", desc: "Exercise reduces OCD severity by regulating serotonin and giving the brain a healthy outlet for compulsive energy." }
+    ],
+    resources: ["OCD specialist or CBT therapist strongly recommended", "IOCDF: iocdf.org", "iCall India: 9152987821"]
+  },
+  Bipolar: {
+    validation: "Navigating extreme mood shifts requires immense strength. During a low, it can be impossible to remember the high — and vice versa. Your value and worth remain constant regardless of your current phase.",
+    science: "Bipolar patterns are associated with disruptions in the brain's internal clock (circadian rhythm) and sensitivity fluctuations in the Limbic System's neurotransmitter receptors — particularly serotonin, dopamine, and norepinephrine.",
+    tips: [
+      { title: "Mood Charting", desc: "Track your mood daily (1–10), sleep hours, and energy level. Recognizing your personal early warning signs is the most powerful self-management tool." },
+      { title: "Sleep is Critical", desc: "Sleep disruption can trigger both manic and depressive episodes. Prioritize consistent sleep above all else, even when energy feels high." },
+      { title: "Reduce Stimulants", desc: "Caffeine, alcohol, and high-sugar foods can destabilize mood cycles. Gradual reduction helps create a more stable baseline." },
+      { title: "Tell Someone You Trust", desc: "Identify 1–2 people who can be your 'anchor' when mood shifts. Give them permission to gently name what they observe." },
+      { title: "Medication Consistency", desc: "If prescribed, maintaining consistent medication is the single most evidence-backed intervention. Never adjust doses alone." }
+    ],
+    resources: ["Psychiatrist evaluation is strongly recommended", "DBSA (Bipolar Support Alliance): dbsalliance.org", "iCall India: 9152987821"]
+  },
+  Psychosis: {
+    validation: "Your mind is processing information differently right now. This is a medical experience that many people recover from — not a permanent state, and not a personal failing.",
+    science: "Psychosis involves a shift in the brain's 'salience' system — the Mesolimbic pathway over-attributes meaning to ordinary stimuli, making random events feel deeply significant or threatening. Early intervention dramatically improves outcomes.",
+    tips: [
+      { title: "Seek Evaluation Now", desc: "Psychosis symptoms respond best to early treatment. Please speak with a doctor, family member, or mental health professional as soon as possible." },
+      { title: "Reduce Cannabis Use", desc: "Cannabis is the single most well-documented environmental trigger for psychotic episodes, especially in those genetically predisposed." },
+      { title: "Reduce Stress Actively", desc: "Stress is a primary trigger. Identify your top 2 stressors and create one concrete reduction plan for each." },
+      { title: "Maintain Routine", desc: "Regular meals, sleep, and activity provide anchors when perception feels unstable." },
+      { title: "Stay Connected", desc: "Isolation worsens symptoms. Daily contact with a trusted person — even brief — provides reality grounding." }
+    ],
+    resources: ["Emergency: Please consult a psychiatrist or go to your nearest hospital", "NIMHANS Bangalore: +91-80-46110007", "iCall India: 9152987821"]
+  },
+  Eating: {
+    validation: "Acknowledging your relationship with food takes courage. You deserve to nourish yourself without fear, shame, or punishment. Your body is not the problem.",
+    science: "Disordered eating can disrupt the Insula — the brain region that reads internal body signals like hunger and fullness. Over time, the brain loses accurate hunger cues. Recovery involves gently reintroducing trust in these signals.",
+    tips: [
+      { title: "Intuitive Eating Basics", desc: "Try to eat without screens or distractions. This rebuilds awareness of hunger and fullness cues that restriction disrupts." },
+      { title: "Challenge Food Rules", desc: "Write down one 'food rule' you follow (e.g., 'I can't eat after 7pm'). Ask: where did this come from? Is it kind?" },
+      { title: "Avoid Tracking Apps", desc: "Calorie-tracking apps maintain food anxiety. Taking a break often provides more psychological relief than expected." },
+      { title: "Eat with Others", desc: "Social eating rebuilds the positive emotional associations with food that restriction erodes." },
+      { title: "Body Neutrality", desc: "Rather than trying to love your body, try being neutral — 'My body allows me to do things.' This is more achievable and reduces shame." }
+    ],
+    resources: ["Registered dietitian + therapist specializing in EDs recommended", "National Alliance for Eating Disorders Helpline: 1-866-662-1235", "iCall India: 9152987821"]
+  },
+  PTSD: {
+    validation: "Your brain is stuck in survival mode because of what you have endured. The hypervigilance, the flashbacks — these are your brain trying to protect you. They are a sign of how hard you fought to survive.",
+    science: "The Hippocampus (memory center) may struggle to time-stamp trauma as 'past,' so the Amygdala responds to reminders as if the threat is present now. Trauma therapies like EMDR and CPT directly address this misfiling.",
+    tips: [
+      { title: "Grounding After Triggers", desc: "When triggered, press your feet firmly into the ground, name your environment aloud ('I am in my room, it is 2025'). This re-orients the Hippocampus to the present." },
+      { title: "Titrated Exposure", desc: "Don't avoid all reminders forever — avoidance maintains PTSD. With a therapist, gradually approach memories from a safe distance." },
+      { title: "Safe Place Visualization", desc: "Build a detailed mental image of a place where you feel completely safe. Practice visiting it for 5 minutes daily so it's accessible during flashbacks." },
+      { title: "Breathwork", desc: "Slow, diaphragmatic breathing during hyperarousal directly signals the nervous system to exit survival mode." },
+      { title: "Limit News and Violent Media", desc: "Sensory inputs that resemble trauma can re-trigger the stress response. Curate your media environment intentionally." }
+    ],
+    resources: ["Trauma-informed therapist (EMDR, CPT) recommended", "iCall India: 9152987821", "NIMHANS: +91-80-46110007"]
+  },
+  Addiction: {
+    validation: "Dependency is a physiological change in your brain's reward system — not a moral failure. The same brain that created the dependency has the capacity to rewire through consistent new patterns.",
+    science: "Addiction hijacks the Nucleus Accumbens, flooding it with dopamine far beyond natural rewards. Over time, everyday pleasures lose reward value. Recovery involves rebuilding natural dopamine pathways through healthy behaviors.",
+    tips: [
+      { title: "HALT Check", desc: "Before giving in to a craving, ask: Am I Hungry, Angry, Lonely, or Tired? Many cravings are unmet basic needs in disguise." },
+      { title: "Urge Surfing", desc: "Cravings peak at 15–20 minutes and then pass. Visualize the craving as a wave you can ride — it will break." },
+      { title: "Replace the Trigger", desc: "Identify your top 2 triggers (boredom, stress, certain places). Plan a specific replacement behavior for each." },
+      { title: "Break the Environment", desc: "Changing your physical environment (routes, rooms, social circles) is one of the most effective relapse prevention strategies." },
+      { title: "One Day at a Time", desc: "Don't try to commit to forever. Commit to today only. Tomorrow, do the same." }
+    ],
+    resources: ["iCall India: 9152987821", "AA/NA local meetings: na.org", "National Drug Helpline India: 1800-11-0031"]
+  },
+  SocialAnxiety: {
+    validation: "The fear of judgment is one of the most evolutionarily ancient fears we carry — social rejection once meant exclusion from the tribe. Your brain is doing exactly what it evolved to do; it's just overestimating the danger.",
+    science: "Social anxiety involves heightened activation in the Ventrolateral Prefrontal Cortex and an overactive threat-detection response to social cues. Gradual, repeated exposure to social situations physically remodels this response.",
+    tips: [
+      { title: "Ladder Approach", desc: "Create a list of feared social situations from easiest to hardest. Start with easiest and practice weekly until comfortable, then move up." },
+      { title: "Shift Focus Outward", desc: "In social situations, genuinely focus on the other person: What do they seem to care about? What are they saying? Attention on others reduces self-monitoring." },
+      { title: "Reject the Post-Mortem", desc: "After a social interaction, set a 5-minute limit on replaying it. After that, consciously redirect. The brain exaggerates mistakes in retrospect." },
+      { title: "Reduce Safety Behaviors", desc: "Behaviors like speaking quietly, avoiding eye contact, or sitting near exits maintain anxiety by preventing the disconfirmation of your fears." },
+      { title: "Small Daily Exposures", desc: "Make one small unscripted interaction daily (ask a shop assistant something, compliment a stranger). Each success builds new neural evidence." }
+    ],
+    resources: ["CBT therapist recommended", "Social Anxiety Association: socialphobia.org", "iCall India: 9152987821"]
+  },
+  Postpartum: {
+    validation: "This is a profound hormonal and neurological transition. You are a good mother even if you don't feel like yourself right now. Postpartum depression is among the most common and most treatable perinatal complications.",
+    science: "The rapid post-birth drop in estrogen and progesterone affects Serotonin receptor sensitivity and disrupts the HPA stress axis. This is a physiological event, not a reflection of your capability or love for your child.",
+    tips: [
+      { title: "Accept Help", desc: "The cultural pressure to 'handle everything' is harmful. Accepting help with food, cleaning, or childcare is not weakness — it is medical necessity." },
+      { title: "Skin-to-Skin Contact", desc: "Physical contact with your baby releases oxytocin, which can help counteract depression and strengthen emotional bonding." },
+      { title: "Speak to Your Doctor", desc: "Postpartum depression responds well to treatment, including therapy, medication, and community support. Please don't wait — the sooner, the better." },
+      { title: "Nap When Baby Naps", desc: "Even 20 minutes of rest restores prefrontal function, reducing irritability and emotional overwhelm." },
+      { title: "Connect with Other Mothers", desc: "Sharing experiences with others who understand normalizes what you're going through and reduces shame-based isolation." }
+    ],
+    resources: ["Talk to your OB or GP immediately", "Postpartum Support International: postpartum.net", "iCall India: 9152987821"]
+  },
+  Child: {
+    validation: "Children express distress through behavior because they lack the vocabulary for emotions. This screening reflects your attentiveness as a caregiver — noticing is the first act of helping.",
+    science: "A child's Prefrontal Cortex (emotional regulation) isn't fully developed until age 25. They are neurologically dependent on caregivers to co-regulate. Consistent, warm, predictable parenting literally shapes healthy brain architecture.",
+    tips: [
+      { title: "Emotion Labeling", desc: "Help your child name feelings: 'It looks like you might be frustrated right now.' Labeling emotions activates the prefrontal cortex and reduces the intensity of the limbic reaction." },
+      { title: "Predictable Routine", desc: "Children's stress systems calm dramatically with predictability. Consistent meal, sleep, and school times reduce anxiety and outbursts." },
+      { title: "Calm-Down Corner", desc: "Create a quiet space with soft textures, a stress ball, or calming sensory items. Make it a positive retreat, not a punishment." },
+      { title: "Special Time", desc: "15 minutes daily of uninterrupted, child-led play (put your phone away) dramatically reduces behavioral symptoms and strengthens attachment." },
+      { title: "Consult a Child Psychologist", desc: "Early intervention for child mental health is extremely effective. A professional assessment helps identify the specific support your child needs." }
+    ],
+    resources: ["Consult a child psychologist or pediatrician", "Childline India: 1098", "iCall India: 9152987821"]
+  }
+};
 
-    let responses = {};
+// ===== QUIZ STATE =====
+let responseValues = {};
+let currentType = '';
 
-    function openQuiz(type) {
-        responses = {};
-        const overlay = document.getElementById('quizOverlay');
-        const content = document.getElementById('quizContent');
-        document.getElementById('quizTitle').innerText = type + " Assessment";
-        overlay.style.display = 'block';
-        content.innerHTML = "";
+function openQuiz(type) {
+  responseValues = {};
+  currentType = type;
+  document.getElementById('quizTitle').innerText = type.replace(/([A-Z])/g, ' $1').trim() + " Assessment";
+  const content = document.getElementById('quizContent');
+  content.innerHTML = '';
 
-        quizData[type].forEach((q, i) => {
-            content.innerHTML += `
-                <div style="margin-bottom:35px;">
-                    <p style="font-weight:600; margin-bottom:15px; font-size:1.1rem;">${i+1}. ${q}</p>
-                    <div id="group-${i}">
-                        <button class="opt-btn" onclick="setScore(${i}, 0, this)">Not at all</button>
-                        <button class="opt-btn" onclick="setScore(${i}, 1, this)">Occasionally</button>
-                        <button class="opt-btn" onclick="setScore(${i}, 2, this)">Frequently</button>
-                        <button class="opt-btn" onclick="setScore(${i}, 3, this)">Almost Always</button>
-                    </div>
-                </div>`;
-        });
-        content.innerHTML += `<button onclick="generateReport('${type}')" style="background:var(--primary); color:white; border:none; padding:22px; border-radius:15px; width:100%; font-size:1.2rem; cursor:pointer; font-weight:bold; margin-top:20px;">Generate My Clinical Wellness Report</button>`;
-    }
+  const questions = quizData[type].questions;
+  questions.forEach((q, i) => {
+    content.innerHTML += `
+      <div class="question-block">
+        <p class="question-text">${i+1}. ${q}</p>
+        <div class="options-group" data-q="${i}">
+          <button class="opt-btn" onclick="recordScore(${i}, 0, this)">Not at all</button>
+          <button class="opt-btn" onclick="recordScore(${i}, 1, this)">Sometimes</button>
+          <button class="opt-btn" onclick="recordScore(${i}, 2, this)">Often</button>
+          <button class="opt-btn" onclick="recordScore(${i}, 3, this)">Very often</button>
+        </div>
+      </div>`;
+  });
 
-    function setScore(qIdx, val, btn) {
-        responses[qIdx] = val;
-        const parent = document.getElementById('group-' + qIdx);
-        parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected-opt'));
-        btn.classList.add('selected-opt');
-    }
+  content.innerHTML += `
+    <button class="btn-submit-quiz" onclick="processResults('${type}')">View My Report →</button>
+    <div id="innerResult" style="display:none; margin-top:24px;"></div>`;
 
-    function generateReport(type) {
-        if (Object.keys(responses).length < 10) { alert("Please complete all questions."); return; }
-        
-        let score = Object.values(responses).reduce((a, b) => a + b, 0);
-        const insight = getFullInsight(type);
-        const level = score <= 10 ? "Mild" : score <= 20 ? "Moderate" : "High";
+  updateProgress();
+  document.getElementById('quizOverlay').style.display = 'flex';
+  document.querySelector('.quiz-modal').scrollTop = 0;
+}
 
-        const reportHTML = `
-            <div id="pdfOutput">
-                <div class="report-page">
-                    <h1 class="hope-header">Personal Wellness Report: ${type}</h1>
-                    
-                    <div class="section-box" style="background:var(--secondary); border:none;">
-                        <h3 style="color:var(--primary); margin-bottom:10px;">Compassionate Validation</h3>
-                        <p>${insight.validation}</p>
-                    </div>
+function recordScore(qi, value, btn) {
+  const group = btn.parentElement;
+  group.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  responseValues[qi] = value;
+  updateProgress();
+}
 
-                    <div class="section-box">
-                        <h3 style="margin-bottom:10px;">The Science of Your Experience</h3>
-                        <p>${insight.science}</p>
-                        
-                    </div>
+function updateProgress() {
+  const total = quizData[currentType] ? quizData[currentType].questions.length : 10;
+  const answered = Object.keys(responseValues).length;
+  const pct = Math.round((answered / total) * 100);
+  document.getElementById('progressText').textContent = `${answered} / ${total} answered`;
+  document.getElementById('progressPct').textContent = `${pct}%`;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
 
-                    <div class="section-box" style="border: 2px solid var(--warm-gold);">
-                        <h3 style="color:var(--warm-gold); margin-bottom:10px;">Immediate Care Protocol</h3>
-                        <p>Before proceeding, take a sip of water and notice the weight of your body on your chair. You are here, and you are safe.</p>
-                    </div>
-                    
-                    <div style="text-align:center; padding:20px; color:var(--muted);">
-                        <strong>Symptom Intensity Indicator: ${level} (${score}/30)</strong>
-                    </div>
-                </div>
+function closeQuiz() {
+  document.getElementById('quizOverlay').style.display = 'none';
+}
 
-                <div class="report-page page-break">
-                    <h2 class="hope-header">Your Recovery Roadmap</h2>
-                    
-                    <div class="section-box">
-                        <h3 style="margin-bottom:15px;">A Gentle 7-Day Plan</h3>
-                        <ul style="list-style: none;">
-                            ${insight.roadmap.map((step, idx) => `
-                                <li style="padding:15px 0; border-bottom:1px solid #eee;">
-                                    <strong>Step ${idx+1}:</strong> ${step}
-                                </li>
-                            `).join('')}
-                        </ul>
-                    </div>
+function processResults(type) {
+  const resDiv = document.getElementById('innerResult');
+  const totalQuestions = quizData[type].questions.length;
+  const answeredCount = Object.keys(responseValues).length;
 
-                    <div class="section-box" style="background:#fcfcfc;">
-                        <h3 style="margin-bottom:15px;">Daily Reflection Log</h3>
-                        <p style="font-size:0.9rem; margin-bottom:20px;">Use this grid to color in your energy levels throughout the week.</p>
-                        <div style="display:flex; justify-content:space-around; font-size:1.8rem;">
-                            <span>🌑</span><span>🌒</span><span>🌓</span><span>🌔</span><span>🌕</span><span>☀️</span><span>✨</span>
-                        </div>
-                    </div>
+  if (answeredCount < totalQuestions) {
+    resDiv.style.display = 'block';
+    resDiv.innerHTML = `<p style="color:var(--danger);font-weight:700;text-align:center;font-size:0.88rem;padding:12px;">⚠️ Please answer all ${totalQuestions} questions first.</p>`;
+    return;
+  }
 
-                    <div class="section-box" style="background:#fff4f4; border-color:var(--soft-red);">
-                        <h3 style="color:var(--soft-red);">Clinical Connection</h3>
-                        <p>We recommend sharing this report with your physician or therapist. Healing is faster when we don't walk the path alone.</p>
-                        <p style="margin-top:10px;"><strong>Crisis Contact:</strong> Dial 988 for 24/7 support.</p>
-                    </div>
+  let totalScore = 0;
+  const scores = [];
+  for (let i = 0; i < totalQuestions; i++) {
+    scores.push(responseValues[i]);
+    totalScore += responseValues[i];
+  }
 
-                    <div style="text-align:center; margin-top:60px;">
-                        <p style="font-weight:bold; color:var(--primary); font-size:1.2rem;">"The sun will rise, and we will try again."</p>
-                    </div>
-                </div>
-            </div>
-            <button id="dlBtn" onclick="savePDF()" style="background:var(--primary); color:white; width:100%; padding:22px; border:none; border-radius:15px; margin-top:20px; cursor:pointer; font-weight:bold; font-size:1.1rem;">📥 Download Full 2-Page Wellness Report</button>
-        `;
+  const typeName = type.replace(/([A-Z])/g, ' $1').trim();
+  const today = new Date().toLocaleDateString('en-IN', { month:'long', day:'numeric', year:'numeric' });
+  const time = new Date().toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
 
-        document.getElementById('quizSub').style.display = 'none';
-        document.getElementById('quizContent').innerHTML = reportHTML;
-        document.querySelector('#quizOverlay').scrollTop = 0;
-    }
+  let level, color, levelIcon;
+  if (totalScore <= 7)        { level='Minimal Signs';  color='#3a5a40'; levelIcon='🟢'; }
+  else if (totalScore <= 14)  { level='Mild Signs';     color='#7a9e6a'; levelIcon='🟡'; }
+  else if (totalScore <= 21)  { level='Moderate Signs'; color='#c89640'; levelIcon='🟠'; }
+  else                        { level='High Signs';     color='#c0392b'; levelIcon='🔴'; }
 
-    function savePDF() {
-        const element = document.getElementById('pdfOutput');
-        const btn = document.getElementById('dlBtn');
-        btn.style.display = 'none';
-        const opt = {
-            margin: 0,
-            filename: 'MindNest_Wellness_Report.pdf',
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(element).save().then(() => btn.style.display = 'block');
-    }
+  const pct = Math.round((totalScore / 30) * 100);
+  const insight = emotionalInsights[type] || emotionalInsights['Anxiety'];
+  const domains = quizData[type].domains;
 
-    function closeQuiz() { document.getElementById('quizOverlay').style.display = 'none'; }
+  // Domain breakdown (group into pairs of questions → 5 domain groups)
+  const domainData = [];
+  for (let d = 0; d < 5; d++) {
+    const s = scores[d*2] + scores[d*2+1];
+    domainData.push({ name: domains[d*2] + ' & ' + domains[d*2+1], score: s, max: 6 });
+  }
+
+  // Flagged symptoms
+  const flagged = [], moderate = [], ok = [];
+  scores.forEach((s, i) => {
+    if (s >= 2) flagged.push(domains[i]);
+    else if (s === 1) moderate.push(domains[i]);
+    else ok.push(domains[i]);
+  });
+
+  resDiv.style.display = 'block';
+  resDiv.innerHTML = `
+<div id="pdfContent" class="report-wrap">
+
+  <!-- HEADER BAND -->
+  <div class="report-header-band">
+    <div class="rh-left">
+      <h2>🌿 MindNest Wellness Report</h2>
+      <p>${typeName} Screening &nbsp;·&nbsp; ${today}, ${time}</p>
+    </div>
+    <div class="rh-score">
+      <div class="sc-label">Score</div>
+      <div class="sc-num">${totalScore}<span style="font-size:1rem;font-weight:400;opacity:0.6">/30</span></div>
+      <div class="sc-level">${levelIcon} ${level}</div>
+    </div>
+  </div>
+
+  <!-- SCORE VISUAL + SEVERITY -->
+  <div class="report-card">
+    <div class="report-card-title"><span>📊</span> Score Overview</div>
+    <div class="score-visual-row">
+      <div class="chart-wrap" style="position:relative;">
+        <canvas id="resultChart"></canvas>
+      </div>
+      <div style="flex:1; min-width:180px;">
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:10px;">Severity Spectrum</div>
+        <div class="severity-spectrum">
+          <div class="severity-track"><div class="severity-marker" id="severityMarker"></div></div>
+          <div class="severity-labels"><span>Minimal</span><span>Mild</span><span>Moderate</span><span>High</span></div>
+        </div>
+        <div style="margin-top:14px;">
+          <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;">What this means</div>
+          <div style="font-size:0.85rem;line-height:1.6;color:var(--text-main);">${getLevelDescription(level, typeName)}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOMAIN BREAKDOWN -->
+  <div class="report-card">
+    <div class="report-card-title"><span>🔍</span> Domain Breakdown</div>
+    <div class="domain-grid">
+      ${domainData.map(d => {
+        const dpct = Math.round((d.score / d.max) * 100);
+        const dc = dpct >= 67 ? '#c0392b' : dpct >= 34 ? '#c89640' : '#3a5a40';
+        return `<div class="domain-item">
+          <div class="domain-label">${d.name}</div>
+          <div class="domain-bar"><div class="domain-fill" style="width:0%;background:${dc}" data-w="${dpct}"></div></div>
+          <div class="domain-score">${d.score}/${d.max} (${dpct}%)</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  <!-- SYMPTOM FLAGS -->
+  <div class="report-card">
+    <div class="report-card-title"><span>🏷️</span> Symptom Profile</div>
+    <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:12px;">Areas where you reported experiencing symptoms frequently:</p>
+    <div>
+      ${flagged.length ? `<div style="margin-bottom:8px;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#c0392b;">Often / Very Often</div>${flagged.map(s=>`<span class="symptom-tag flagged">${s}</span>`).join('')}` : ''}
+      ${moderate.length ? `<div style="margin:10px 0 8px;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#c89640;">Sometimes</div>${moderate.map(s=>`<span class="symptom-tag mild">${s}</span>`).join('')}` : ''}
+      ${ok.length ? `<div style="margin:10px 0 8px;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#3a5a40;">Rarely</div>${ok.map(s=>`<span class="symptom-tag ok">${s}</span>`).join('')}` : ''}
+      ${flagged.length === 0 && moderate.length === 0 ? '<p style="font-size:0.85rem;color:var(--text-muted);">✅ No significant symptoms flagged at this time.</p>' : ''}
+    </div>
+  </div>
+
+  <!-- WHAT YOU FEEL IS REAL -->
+  <div class="report-card">
+    <div class="report-card-title"><span>💬</span> A Note for You</div>
+    <div class="validation-quote"><p>${insight.validation}</p></div>
+  </div>
+
+  <!-- THE SCIENCE -->
+  <div class="report-card">
+    <div class="report-card-title"><span>🧠</span> What's Happening in Your Brain</div>
+    <div class="science-box">
+      <div class="sci-head">The Neuroscience</div>
+      <p>${insight.science}</p>
+    </div>
+  </div>
+
+  <!-- COPING STRATEGIES -->
+  <div class="report-card">
+    <div class="report-card-title"><span>🛠️</span> Evidence-Based Strategies</div>
+    <div>
+      ${insight.tips.map((t,i) => `
+        <div class="tip-item">
+          <div class="tip-num">${i+1}</div>
+          <div>
+            <div class="tip-title">${t.title}</div>
+            <div class="tip-desc">${t.desc}</div>
+          </div>
+        </div>`).join('')}
+    </div>
+  </div>
+
+  <!-- RESOURCES -->
+  <div class="report-card">
+    <div class="report-card-title"><span>📞</span> Support & Resources</div>
+    <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:14px;">If this report reflects significant distress, please reach out to a professional. These are some starting points:</p>
+    <div class="resource-row">
+      ${insight.resources.map(r => `<span class="resource-chip">🔗 ${r}</span>`).join('')}
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer-strip">
+    <div class="di-icon">⚠️</div>
+    <p>This report is a <strong>self-screening tool only</strong>, not a clinical diagnosis. It is intended for personal awareness and should not replace evaluation by a licensed mental health professional. If you are in crisis, please visit your nearest emergency room or call a helpline immediately.</p>
+  </div>
+
+  <!-- PRINT -->
+  <button class="btn-pdf no-print" onclick="printReport()">📥 Save as PDF (Print to PDF)</button>
+</div>`;
+
+  // Initialize chart
+  setTimeout(() => {
+    const ctx = document.getElementById('resultChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        datasets: [{ data:[totalScore, 30-totalScore], backgroundColor:[color,'rgba(0,0,0,0.05)'], borderWidth:0 }]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false, cutout:'75%',
+        plugins: { tooltip:{ enabled:false } }
+      }
+    });
+
+    // Severity marker
+    const markerPct = Math.min(95, Math.max(3, (totalScore/30)*100));
+    document.getElementById('severityMarker').style.left = markerPct + '%';
+
+    // Animate domain bars
+    document.querySelectorAll('.domain-fill').forEach(bar => {
+      setTimeout(() => { bar.style.width = bar.getAttribute('data-w') + '%'; }, 200);
+    });
+
+    document.querySelector('.quiz-modal').scrollTo({ top: 9999, behavior:'smooth' });
+  }, 100);
+}
+
+function getLevelDescription(level, type) {
+  const desc = {
+    'Minimal Signs': `Your responses suggest few or no significant ${type.toLowerCase()} symptoms at this time. Continue practicing healthy habits and check in periodically.`,
+    'Mild Signs': `Your responses indicate some ${type.toLowerCase()} symptoms that may be worth monitoring. Self-care strategies can be highly effective at this stage.`,
+    'Moderate Signs': `Your responses suggest a moderate level of ${type.toLowerCase()} symptoms that are likely impacting your day-to-day life. Speaking with a mental health professional would be beneficial.`,
+    'High Signs': `Your responses indicate significant ${type.toLowerCase()} symptoms. We strongly encourage you to speak with a doctor or mental health professional soon. You deserve support.`
+  };
+  return desc[level] || '';
+}
+
+function printReport() {
+  const reportEl = document.getElementById('pdfContent');
+  if (!reportEl) {
+    alert('Please complete an assessment first before printing.');
+    return;
+  }
+
+  // Capture chart as image before anything
+  const canvas = document.getElementById('resultChart');
+  const chartImgSrc = canvas ? canvas.toDataURL('image/png') : '';
+
+  // Get the current domain bar widths from live DOM (they're animated via style)
+  const liveBars = document.querySelectorAll('.domain-fill');
+  const barWidths = Array.from(liveBars).map(b => b.style.width || b.getAttribute('data-w') + '%');
+
+  // Get severity marker position
+  const markerEl = document.getElementById('severityMarker');
+  const markerLeft = markerEl ? markerEl.style.left : '10%';
+
+  // Build full HTML from scratch with all styles inlined — most reliable print method
+  const reportClone = reportEl.cloneNode(true);
+
+  // Replace canvas with img
+  const cloneCanvas = reportClone.querySelector('canvas');
+  if (cloneCanvas && chartImgSrc) {
+    const img = document.createElement('img');
+    img.src = chartImgSrc;
+    img.style.cssText = 'width:120px;height:120px;display:block;border-radius:50%;';
+    cloneCanvas.parentNode.replaceChild(img, cloneCanvas);
+  }
+
+  // Apply live bar widths to cloned bars
+  const cloneBars = reportClone.querySelectorAll('.domain-fill');
+  cloneBars.forEach((bar, i) => { if (barWidths[i]) bar.style.width = barWidths[i]; });
+
+  // Apply severity marker position
+  const cloneMarker = reportClone.querySelector('#severityMarker');
+  if (cloneMarker) cloneMarker.style.left = markerLeft;
+
+  // Remove print button from clone
+  const printBtn = reportClone.querySelector('.btn-pdf');
+  if (printBtn) printBtn.remove();
+
+  const printHTML = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>MindNest Wellness Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans',sans-serif; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body { background:white; color:#344e41; padding:24px; font-size:13px; }
+    .report-wrap { max-width:720px; margin:0 auto; }
+
+    /* Header band */
+    .report-header-band { background:#3a5a40; color:white; border-radius:16px; padding:24px 28px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+    .rh-left h2 { font-size:1.2rem; font-weight:800; letter-spacing:-0.5px; margin-bottom:3px; }
+    .rh-left p { font-size:0.72rem; opacity:0.75; }
+    .rh-score { text-align:right; }
+    .sc-num { font-size:2.6rem; font-weight:800; letter-spacing:-3px; line-height:1; }
+    .sc-label { font-size:0.65rem; opacity:0.7; text-transform:uppercase; letter-spacing:1px; }
+    .sc-level { font-size:0.82rem; font-weight:700; margin-top:2px; }
+
+    /* Cards */
+    .report-card { background:white; border:1.5px solid #e0e8e0; border-radius:14px; padding:20px 24px; margin-bottom:12px; page-break-inside:avoid; break-inside:avoid; }
+    .report-card-title { font-size:0.62rem; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; color:#588157; margin-bottom:12px; display:flex; align-items:center; gap:6px; }
+
+    /* Score overview */
+    .score-visual-row { display:flex; align-items:flex-start; gap:20px; flex-wrap:wrap; }
+    .chart-wrap { width:110px; height:110px; flex-shrink:0; }
+    .chart-wrap img { width:110px; height:110px; }
+    .severity-spectrum { margin:8px 0 4px; }
+    .severity-track { height:9px; border-radius:100px; background:linear-gradient(to right,#3a5a40 0%,#7a9e6a 33%,#c89640 66%,#c0392b 100%); position:relative; }
+    .severity-marker { position:absolute; top:-4px; width:17px; height:17px; border-radius:50%; background:white; border:3px solid #344e41; transform:translateX(-50%); box-shadow:0 2px 6px rgba(0,0,0,0.2); }
+    .severity-labels { display:flex; justify-content:space-between; margin-top:5px; font-size:0.58rem; font-weight:700; text-transform:uppercase; color:#588157; }
+
+    /* Domain */
+    .domain-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .domain-item { background:#f4f6f4; border-radius:10px; padding:12px 14px; }
+    .domain-label { font-size:0.68rem; font-weight:700; color:#588157; margin-bottom:7px; }
+    .domain-bar { height:6px; background:#e0e8e0; border-radius:100px; overflow:hidden; }
+    .domain-fill { height:100%; border-radius:100px; }
+    .domain-score { font-size:0.7rem; font-weight:700; color:#344e41; margin-top:4px; }
+
+    /* Symptoms */
+    .symptom-tag { display:inline-block; padding:4px 10px; border-radius:100px; font-size:0.68rem; font-weight:700; margin:3px 2px; border:1.5px solid #e0e8e0; color:#588157; background:#f4f6f4; }
+    .symptom-tag.flagged { background:rgba(192,57,43,0.08); border-color:rgba(192,57,43,0.3); color:#c0392b; }
+    .symptom-tag.mild { background:rgba(200,150,64,0.08); border-color:rgba(200,150,64,0.3); color:#c89640; }
+    .symptom-tag.ok { background:rgba(58,90,64,0.08); border-color:rgba(58,90,64,0.2); color:#3a5a40; }
+
+    /* Science */
+    .science-box { background:#f4f6f4; border-left:4px solid #3a5a40; border-radius:0 12px 12px 0; padding:14px 18px; margin-top:8px; }
+    .sci-head { font-size:0.65rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#3a5a40; margin-bottom:6px; }
+    .science-box p { font-size:0.83rem; line-height:1.65; color:#344e41; }
+
+    /* Validation */
+    .validation-quote { font-style:italic; font-size:0.9rem; line-height:1.7; color:#344e41; padding:16px 20px 16px 32px; background:#f4f6f4; border-radius:14px; position:relative; }
+    .validation-quote::before { content:'"'; font-size:2.5rem; color:#a3b18a; line-height:0.5; position:absolute; top:18px; left:10px; font-family:Georgia,serif; }
+
+    /* Tips */
+    .tip-item { display:flex; gap:12px; padding:12px 0; border-bottom:1px solid #e0e8e0; align-items:flex-start; }
+    .tip-item:last-child { border-bottom:none; }
+    .tip-num { width:24px; height:24px; border-radius:50%; background:#3a5a40; color:white; font-size:0.68rem; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+    .tip-title { font-size:0.85rem; font-weight:700; color:#344e41; margin-bottom:2px; }
+    .tip-desc { font-size:0.78rem; color:#588157; line-height:1.55; }
+
+    /* Resources */
+    .resource-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+    .resource-chip { padding:7px 14px; border-radius:8px; font-size:0.75rem; font-weight:700; border:1.5px solid #e0e8e0; color:#344e41; background:#f4f6f4; }
+
+    /* Disclaimer */
+    .disclaimer-strip { background:rgba(192,57,43,0.06); border:1.5px solid rgba(192,57,43,0.2); border-radius:12px; padding:14px 18px; display:flex; gap:10px; align-items:flex-start; margin-top:6px; }
+    .di-icon { font-size:1rem; flex-shrink:0; }
+    .disclaimer-strip p { font-size:0.75rem; color:#c0392b; line-height:1.55; font-weight:500; }
+
+    /* Symptom section labels */
+    .sym-label { font-size:0.65rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; margin:8px 0 5px; }
+    .sym-label.red { color:#c0392b; }
+    .sym-label.yellow { color:#c89640; }
+    .sym-label.green { color:#3a5a40; }
+  </style>
+</head>
+<body>
+  <div class="report-wrap">
+    ${reportClone.innerHTML}
+  </div>
+</body>
+</html>`;
+
+  const printWin = window.open('', '_blank', 'width=800,height=900');
+  if (!printWin) {
+    alert('Please allow popups for this site to enable printing.');
+    return;
+  }
+  printWin.document.write(printHTML);
+  printWin.document.close();
+  printWin.onload = () => {
+    setTimeout(() => {
+      printWin.focus();
+      printWin.print();
+      setTimeout(() => printWin.close(), 1000);
+    }, 400);
+  };
+}
 </script>
+<!-- Dedicated print container: populated by printReport() -->
+<div id="printContainer"></div>
 
 </body>
 </html>

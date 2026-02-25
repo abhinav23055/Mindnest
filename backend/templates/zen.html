@@ -1,247 +1,549 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MindNest | Zen Zone</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #3a5a40; 
-            --accent: #a3b18a;
-            --bg-base: #fdfdfd;
-            --text-main: #344e41;
-            --text-muted: #588157;
-            --white: #ffffff;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindNest | Zen Zone</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3a5a40;
+      --accent: #a3b18a;
+      --bg-base: #fdfdfd;
+      --text-main: #344e41;
+      --text-muted: #588157;
+      --white: #ffffff;
+      --glass: rgba(255, 255, 255, 0.7);
+      --section-bg: #f4f6f4;
+    }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        
-        body { 
-            background: var(--bg-base); 
-            color: var(--text-main); 
-            min-height: 100vh;
-            display: flex; 
-            flex-direction: column;
-            overflow-x: hidden;
-        }
+    [data-theme="dark"] {
+      --primary: #a3b18a;
+      --accent: #3a5a40;
+      --bg-base: #1a1a1a;
+      --text-main: #f1f4f1;
+      --text-muted: #a3b18a;
+      --white: #242424;
+      --glass: rgba(36, 36, 36, 0.8);
+      --section-bg: #2d2d2d;
+    }
 
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 10%;
-            background: rgba(253, 253, 253, 0.8);
-            backdrop-filter: blur(15px);
-            z-index: 100;
-        }
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
 
-        .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -1px; color: var(--primary); text-decoration: none; }
-        .back-link { text-decoration: none; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; }
+    body {
+      background: var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
 
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-        }
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 10%;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.03);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
 
-        .zen-card {
-            max-width: 500px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    .logo { font-weight: 800; font-size: 1.3rem; letter-spacing: -1.5px; color: var(--primary); text-decoration: none; }
+    .nav-buttons { display: flex; gap: 30px; align-items: center; }
+    .nav-link { text-decoration: none; color: var(--text-main); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; }
 
-        .badge {
-            border: 1px solid var(--accent);
-            color: var(--text-muted);
-            padding: 6px 14px;
-            border-radius: 100px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 20px;
-        }
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--accent);
+      color: var(--primary);
+      padding: 6px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
 
-        h1 { font-size: 2.5rem; font-weight: 800; color: var(--primary); letter-spacing: -1.5px; margin-bottom: 10px; }
-        #instruction { font-size: 1.1rem; color: var(--text-muted); font-weight: 400; min-height: 1.7em; margin-bottom: 20px; }
+    .btn-premium {
+      background: var(--primary);
+      color: var(--white);
+      padding: 10px 25px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 10px 20px rgba(58, 90, 64, 0.15);
+    }
 
-        .visual-container {
-            position: relative;
-            width: 320px;
-            height: 320px;
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    /* MAIN */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+    }
 
-        .outer-ring {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 1px solid rgba(163, 177, 138, 0.3);
-            border-radius: 50%;
-        }
+    .zen-card {
+      max-width: 520px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
 
-        .breathing-bubble {
-            width: 100px;
-            height: 100px;
-            background: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 800;
-            font-size: 1.5rem;
-            box-shadow: 0 10px 40px rgba(58, 90, 64, 0.2);
-            transition: transform 4s linear, background 4s linear;
-            z-index: 2;
-        }
+    .badge-premium {
+      background: var(--section-bg);
+      color: var(--text-muted);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
 
-        .inhale { transform: scale(2.4); background: var(--accent); }
-        .exhale { transform: scale(1); background: var(--primary); }
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3rem);
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -2px;
+      margin-bottom: 10px;
+    }
 
-        .controls { 
-            margin-top: 50px;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-        }
-        
-        .btn-zen {
-            background: var(--primary);
-            color: var(--white);
-            padding: 18px 45px;
-            border-radius: 16px;
-            border: none;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(58, 90, 64, 0.15);
-        }
+    #instruction {
+      font-size: 1rem;
+      color: var(--text-muted);
+      font-weight: 400;
+      min-height: 1.7em;
+      margin-bottom: 10px;
+    }
 
-        .btn-zen:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(58, 90, 64, 0.25); }
-        .btn-zen.stop { background: #d64d4d; }
+    /* BREATHING VISUAL */
+    .visual-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      margin: 30px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        footer { padding: 40px; font-size: 0.75rem; color: #aaa; text-align: center; }
-    </style>
+    .outer-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 1px solid rgba(163, 177, 138, 0.25);
+      border-radius: 50%;
+    }
+
+    .mid-ring {
+      position: absolute;
+      width: 75%;
+      height: 75%;
+      border: 1px dashed rgba(163, 177, 138, 0.2);
+      border-radius: 50%;
+    }
+
+    .breathing-bubble {
+      width: 90px;
+      height: 90px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 800;
+      font-size: 1.6rem;
+      box-shadow: 0 10px 40px rgba(58, 90, 64, 0.25);
+      transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1), background 4s ease;
+      z-index: 2;
+    }
+
+    .inhale  { transform: scale(2.5); background: var(--accent); }
+    .exhale  { transform: scale(1);   background: var(--primary); }
+
+    /* PHASE LABEL */
+    .phase-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      margin-top: -10px;
+      min-height: 1.4em;
+    }
+
+    /* STAGE DOTS */
+    .stage-dots {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--section-bg);
+      border: 1.5px solid var(--accent);
+      transition: background 0.4s;
+    }
+
+    .dot.active { background: var(--primary); border-color: var(--primary); }
+
+    /* CONTROLS */
+    .controls {
+      margin-top: 16px;
+      display: flex;
+      gap: 14px;
+    }
+
+    .btn-zen {
+      background: var(--primary);
+      color: #fff;
+      padding: 16px 40px;
+      border-radius: 14px;
+      border: none;
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(58, 90, 64, 0.2);
+      transition: all 0.25s ease;
+    }
+
+    .btn-zen:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(58, 90, 64, 0.28); }
+    .btn-zen.stop { background: #c0392b; box-shadow: 0 10px 20px rgba(192,57,43,0.2); }
+
+    /* AUDIO TOGGLE */
+    .btn-audio {
+      background: var(--section-bg);
+      color: var(--text-main);
+      padding: 16px 20px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,0.06);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-audio:hover { background: var(--white); border-color: var(--accent); }
+
+    /* CYCLE INFO */
+    .cycle-info {
+      margin-top: 28px;
+      background: var(--white);
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,0.05);
+      padding: 20px 28px;
+      display: flex;
+      gap: 32px;
+      box-shadow: 0 4px 20px rgba(58,90,64,0.05);
+    }
+
+    .cycle-stat { text-align: center; }
+
+    .cycle-stat .val {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -1px;
+    }
+
+    .cycle-stat .lbl {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    footer {
+      padding: 40px 10%;
+      font-size: 0.75rem;
+      color: #aaa;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) { .nav-buttons { display: none; } }
+  
+    /* PAGE LABEL STRIP */
+    .page-label-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 10%;
+      background: var(--section-bg);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+    }
+    .page-label-strip .pl-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .page-label-strip .pl-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .page-label-strip .pl-home {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      opacity: 0.6;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
+    .page-label-strip .pl-sep { opacity: 0.4; font-weight: 300; }
+    .page-label-strip .pl-current { color: var(--text-main); }
+
+  </style>
 </head>
 <body>
 
-    <audio id="zen-audio" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-    </audio>
+  <!-- Peaceful ambient tone generated via Web Audio API — no external dependency -->
+  <script>
+    let audioCtx, gainNode, oscillators = [], audioReady = false, audioMuted = false;
 
-    <nav>
-        <a href="/" class="logo">MindNest</a>
-        <a href="/dashboard" class="back-link">Return to Dashboard</a>
-    </nav>
+    function initAudio() {
+      if (audioReady) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      gainNode = audioCtx.createGain();
+      gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+      gainNode.connect(audioCtx.destination);
 
-    <main>
-        <div class="zen-card">
-            <div class="badge">Box Breathing Guide</div>
-            <h1 id="timer-display">Zen Zone</h1>
-            <p id="instruction">Click below to begin your 60-second reset.</p>
+      // Layered peaceful drones: root + fifth + soft octave
+      const freqs = [110, 165, 220, 275];
+      freqs.forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const oscGain = audioCtx.createGain();
+        osc.type = i === 0 ? 'sine' : 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        oscGain.gain.setValueAtTime(i === 0 ? 0.18 : 0.06 / (i + 1), audioCtx.currentTime);
+        osc.connect(oscGain);
+        oscGain.connect(gainNode);
+        osc.start();
+        oscillators.push(osc);
+      });
 
-            <div class="visual-container">
-                <div class="outer-ring"></div>
-                <div id="bubble" class="breathing-bubble"></div>
-            </div>
+      audioReady = true;
+    }
 
-            <div class="controls">
-                <button id="start-btn" class="btn-zen" onclick="toggleSession()">Start Session</button>
-            </div>
+    function startAudio() {
+      initAudio();
+      if (!audioMuted) gainNode.gain.linearRampToValueAtTime(1, audioCtx.currentTime + 2);
+    }
+
+    function stopAudio() {
+      if (!audioReady) return;
+      gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 2);
+    }
+
+    function toggleAudio() {
+      const btn = document.getElementById('audio-btn');
+      audioMuted = !audioMuted;
+      if (audioMuted) {
+        gainNode && gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
+        btn.textContent = '🔇';
+      } else {
+        gainNode && gainNode.gain.linearRampToValueAtTime(1, audioCtx.currentTime + 1);
+        btn.textContent = '🔊';
+      }
+    }
+  </script>
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="logo">MindNest</a>
+    <div class="nav-buttons">
+      <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Mode</button>
+      <a href="/articles" class="nav-link">Insights</a>
+      <a href="/dashboard" class="nav-link">Dashboard</a>
+      <a href="/zen" class="nav-link">Zen Zone</a>
+      <a href="/signup" class="btn-premium">Start Journey</a>
+    </div>
+  </nav>
+
+  <!-- PAGE LABEL -->
+  <div class="page-label-strip">
+    <div class="pl-dot" style="background:#5b7a8a;"></div>
+    <div class="pl-breadcrumb">
+      <a href="/" class="pl-home">MindNest</a>
+      <span class="pl-sep">/</span>
+      <span class="pl-current">🧘 Zen Zone</span>
+    </div>
+  </div>
+
+  <main>
+    <div class="zen-card">
+      <div class="badge-premium">Box Breathing Guide</div>
+      <h1>Zen Zone</h1>
+      <p id="instruction">Click below to begin your breathing reset.</p>
+
+      <div class="visual-container">
+        <div class="outer-ring"></div>
+        <div class="mid-ring"></div>
+        <div id="bubble" class="breathing-bubble"></div>
+      </div>
+
+      <p class="phase-label" id="phase-label"></p>
+
+      <div class="stage-dots">
+        <div class="dot" id="dot-0"></div>
+        <div class="dot" id="dot-1"></div>
+        <div class="dot" id="dot-2"></div>
+        <div class="dot" id="dot-3"></div>
+      </div>
+
+      <div class="controls">
+        <button id="start-btn" class="btn-zen" onclick="toggleSession()">Start Session</button>
+        <button id="audio-btn" class="btn-audio" onclick="toggleAudio()">🔊</button>
+      </div>
+
+      <div class="cycle-info">
+        <div class="cycle-stat">
+          <div class="val" id="cycle-count">0</div>
+          <div class="lbl">Cycles</div>
         </div>
-    </main>
+        <div class="cycle-stat">
+          <div class="val" id="time-elapsed">0s</div>
+          <div class="lbl">Elapsed</div>
+        </div>
+        <div class="cycle-stat">
+          <div class="val" id="stage-name">—</div>
+          <div class="lbl">Phase</div>
+        </div>
+      </div>
+    </div>
+  </main>
 
-    <footer>
-        <p>&copy; 2026 MindNest. A BCA Capstone Project.</p>
-    </footer>
+  <footer>
+    <p>&copy; 2026 MindNest. A BCA Capstone Project.</p>
+  </footer>
 
-    <script>
-        let isActive = false;
-        let sessionInterval;
-        let countdownInterval;
-        let stage = 0;
+  <script>
+    // Theme
+    function toggleTheme() {
+      const root = document.documentElement;
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    }
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
 
-        function toggleSession() {
-            const btn = document.getElementById('start-btn');
-            const bubble = document.getElementById('bubble');
-            const instruction = document.getElementById('instruction');
-            const audio = document.getElementById('zen-audio');
+    // Breathing logic
+    let isActive = false;
+    let sessionTimeout, countdownInterval, elapsedInterval;
+    let stage = 0, cycles = 0, elapsed = 0;
 
-            if (!isActive) {
-                // START SESSION
-                isActive = true;
-                btn.innerText = "End Session";
-                btn.classList.add('stop');
-                
-                // Play Soothing Audio
-                audio.currentTime = 0;
-                audio.volume = 0.4;
-                audio.play();
-                
-                runBreathingCycle();
-            } else {
-                // STOP SESSION
-                isActive = false;
-                clearTimeout(sessionInterval);
-                clearInterval(countdownInterval);
-                
-                // Stop Audio
-                audio.pause();
-                
-                btn.innerText = "Start Session";
-                btn.classList.remove('stop');
-                bubble.className = "breathing-bubble";
-                bubble.innerText = "";
-                instruction.innerText = "Session ended. Take a moment for yourself.";
-                stage = 0;
-            }
+    const stages = [
+      { msg: "Inhale slowly...",   phase: "Inhale",  bubbleClass: "breathing-bubble inhale", dot: 0 },
+      { msg: "Hold your breath...", phase: "Hold",   bubbleClass: "breathing-bubble inhale", dot: 1 },
+      { msg: "Exhale gently...",   phase: "Exhale",  bubbleClass: "breathing-bubble exhale", dot: 2 },
+      { msg: "Hold and rest...",   phase: "Rest",    bubbleClass: "breathing-bubble exhale", dot: 3 },
+    ];
+
+    function toggleSession() {
+      const btn = document.getElementById('start-btn');
+      if (!isActive) {
+        isActive = true;
+        stage = 0; cycles = 0; elapsed = 0;
+        btn.textContent = "End Session";
+        btn.classList.add('stop');
+        startAudio();
+        runCycle();
+        elapsedInterval = setInterval(() => {
+          elapsed++;
+          document.getElementById('time-elapsed').textContent = elapsed + 's';
+        }, 1000);
+      } else {
+        endSession();
+      }
+    }
+
+    function endSession() {
+      isActive = false;
+      clearTimeout(sessionTimeout);
+      clearInterval(countdownInterval);
+      clearInterval(elapsedInterval);
+      stopAudio();
+
+      const btn = document.getElementById('start-btn');
+      btn.textContent = "Start Session";
+      btn.classList.remove('stop');
+
+      const bubble = document.getElementById('bubble');
+      bubble.className = "breathing-bubble";
+      bubble.textContent = "";
+      document.getElementById('instruction').textContent = "Session complete. Take a moment for yourself.";
+      document.getElementById('phase-label').textContent = "";
+      document.getElementById('stage-name').textContent = "—";
+      clearDots();
+    }
+
+    function runCycle() {
+      if (!isActive) return;
+
+      const current = stages[stage % 4];
+      const bubble = document.getElementById('bubble');
+
+      document.getElementById('instruction').textContent = current.msg;
+      document.getElementById('phase-label').textContent = current.phase;
+      document.getElementById('stage-name').textContent = current.phase;
+      bubble.className = current.bubbleClass;
+
+      // Dot indicator
+      clearDots();
+      document.getElementById('dot-' + current.dot).classList.add('active');
+
+      // Countdown inside bubble
+      let count = 4;
+      bubble.textContent = count;
+      clearInterval(countdownInterval);
+      countdownInterval = setInterval(() => {
+        count--;
+        if (count > 0) {
+          bubble.textContent = count;
+        } else {
+          clearInterval(countdownInterval);
         }
+      }, 1000);
 
-        function runBreathingCycle() {
-            if (!isActive) return;
+      // Cycle counter increments every full 4-stage loop
+      if (stage % 4 === 3) {
+        cycles++;
+        document.getElementById('cycle-count').textContent = cycles;
+      }
 
-            const bubble = document.getElementById('bubble');
-            const instruction = document.getElementById('instruction');
+      stage++;
+      sessionTimeout = setTimeout(runCycle, 4000);
+    }
 
-            const stages = [
-                { msg: "Inhale slowly...", class: "breathing-bubble inhale" },
-                { msg: "Hold your breath...", class: "breathing-bubble inhale" },
-                { msg: "Exhale gently...", class: "breathing-bubble exhale" },
-                { msg: "Hold and rest...", class: "breathing-bubble exhale" }
-            ];
-
-            const current = stages[stage % 4];
-            instruction.innerText = current.msg;
-            bubble.className = current.class;
-            
-            let count = 4;
-            bubble.innerText = count;
-            
-            // Sync countdown numbers inside the bubble
-            clearInterval(countdownInterval);
-            countdownInterval = setInterval(() => {
-                count--;
-                if (count > 0) {
-                    bubble.innerText = count;
-                } else {
-                    clearInterval(countdownInterval);
-                }
-            }, 1000);
-
-            stage++;
-            sessionInterval = setTimeout(runBreathingCycle, 4000);
-        }
-    </script>
+    function clearDots() {
+      document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+    }
+  </script>
 </body>
 </html>
