@@ -23,7 +23,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: background 0.4s ease, color 0.4s ease; }
         body { background: var(--bg-base); color: var(--text-main); line-height: 1.7; -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex; flex-direction: column; }
 
-        /* NAV MATCHING INDEX */
         nav {
             display: flex;
             justify-content: space-between;
@@ -37,7 +36,36 @@
             z-index: 1000;
         }
 
+        .nav-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* Journal now matches theme-toggle exactly */
+        .journal-btn {
+            background: none;
+            border: 1px solid var(--accent);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        .journal-btn:hover {
+            background: var(--accent);
+            color: var(--white);
+        }
+
         .logo { font-weight: 800; font-size: 1.3rem; letter-spacing: -1.5px; color: var(--primary); text-decoration: none; }
+
         .theme-toggle {
             background: none;
             border: 1px solid var(--accent);
@@ -47,6 +75,11 @@
             cursor: pointer;
             font-size: 0.75rem;
             font-weight: 700;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent);
+            color: var(--white);
         }
 
         /* WELCOME SECTION */
@@ -84,7 +117,6 @@
             margin-bottom: 40px;
         }
 
-        /* BREATHE DOT ANIMATION FROM INDEX */
         .zen-dot {
             width: 15px; height: 15px;
             background: var(--primary);

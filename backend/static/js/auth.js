@@ -65,3 +65,5 @@
         alert("Server is not responding.");
       }
     });
+
+    localStorage.setItem('user_id', data.user_id); // ← must exist after login

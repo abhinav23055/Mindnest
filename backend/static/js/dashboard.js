@@ -68,6 +68,15 @@
         console.error("History loading error:", e);
       }
     }
+    
+    function downloadPDF() {
+  const userId = localStorage.getItem('user_id');
+  if (!userId) {
+    alert('Please log in first.');
+    return;
+  }
+  window.open(`/api/download_pdf/${userId}`, '_blank');
+}
 
     function updateChart(data) {
       const ctx = document.getElementById('wellnessTrendChart').getContext('2d');

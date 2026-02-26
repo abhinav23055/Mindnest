@@ -140,6 +140,18 @@
       }, 100);
     }
 
+    // After showing result, add this button to the result HTML
+const userId = localStorage.getItem('user_id');
+
+if (userId) {
+  resultHTML += `
+    <button onclick="window.open('/api/download_pdf/${userId}', '_blank')" 
+      style="margin-top:16px; padding:10px 24px; background:#3a5a40; 
+             color:white; border:none; border-radius:8px; cursor:pointer;">
+      ⬇️ Download Wellness Report
+    </button>`;
+}
+
             (function(d, t) {
             var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
             v.onload = function() {

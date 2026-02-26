@@ -6,13 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/welcome.css') }}" rel="stylesheet" />
-    
+    <style>
+
+    </style>
 </head>
 <body>
 
     <nav>
         <a href="/" class="logo">MindNest</a>
-        <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Mode</button>
+        <div class="nav-actions">
+            <a href="/journal" class="journal-btn">📓 Journal</a>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Mode</button>
+        </div>
     </nav>
 
     <main class="welcome-hero">
@@ -32,24 +37,6 @@
         <p>&copy; 2026 MindNest. Fostering daily resilience.</p>
     </footer>
 
-    <script>
-        // Use the same theme logic as index.html
-        function toggleTheme() {
-            const body = document.documentElement;
-            const currentTheme = body.getAttribute('data-theme');
-            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            body.setAttribute('data-theme', nextTheme);
-            localStorage.setItem('theme', nextTheme);
-        }
-
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        document.documentElement.setAttribute('data-theme', savedTheme);
-
-        // Personalize the greeting
-        window.onload = function() {
-            const name = localStorage.getItem('first_name') || 'Friend';
-            document.getElementById('userGreeting').innerText = `Welcome back, ${name}.`;
-        };
-    </script>
+    <script src="{{url_for('static', filename='js/welcome.js')}}"></script>
 </body>
 </html>
